@@ -44,11 +44,37 @@ struct comp {
 };
 
 vector<vector<int>> grid;
+vector<vector<int>> items;
 
-int flood(int x=0,int y=0,int px=0,int py=0){
+/*
+int flood(int x=0,int y=0,int px=-1,int py=-1){
     //returns number of matches, from inputs of x and y coordinates
     int color=grid[x][y];
-}
+    items.push_back({x,y});
+    cout << x << " " << y << " " << px << " " << py << endl;
+    if(x<9&&grid[x+1][y]==color){
+        if(x+1!=px||y!=py){
+            flood(x+1,y,x,y);
+        }
+    }
+    if(y<grid.size()-1&&grid[x][y+1]==color){
+        if(x!=px||y+1!=py){
+            flood(x,y+1,x,y);
+        }
+    }
+    if(x>1&&grid[x-1][y]==color){
+        if(x-1!=px||y!=py){
+            flood(x-1,y,x,y);
+        }
+    }
+    if(y>1&&grid[x][y-1]==color){
+        if(x!=px||y-1!=py){
+            flood(x,y-1,x,y);
+        }
+    }
+    return 0;
+}*/
+
 
 int main() {
     ofstream fout ("mooyomooyo.out");
@@ -61,12 +87,12 @@ int main() {
     for(int i=1;i<inputstrings.size();i++){
         grid.push_back({});
         for(int k=0;k<10;k++){
-            grid[grid.size()-1].push_back(stoi(to_string(inputstrings[i][k])));
+            grid[i-1].push_back(stoi(string(1,inputstrings[i][k])));
         }
     }
     for(int i=0;i<grid.size();i++){
         for(int k=0;k<grid[i].size();k++){
-            flood(i,k);
+//            flood(i,k);
         }
     }
     return 0;
