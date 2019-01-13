@@ -43,6 +43,13 @@ struct comp {
   }
 };
 
+vector<vector<int>> grid;
+
+int flood(int x=0,int y=0,int px=0,int py=0){
+    //returns number of matches, from inputs of x and y coordinates
+    int color=grid[x][y];
+}
+
 int main() {
     ofstream fout ("mooyomooyo.out");
     ifstream fin ("mooyomooyo.in");
@@ -51,6 +58,16 @@ int main() {
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
-    fout << "123" << endl;
+    for(int i=1;i<inputstrings.size();i++){
+        grid.push_back({});
+        for(int k=0;k<10;k++){
+            grid[grid.size()-1].push_back(stoi(to_string(inputstrings[i][k])));
+        }
+    }
+    for(int i=0;i<grid.size();i++){
+        for(int k=0;k<grid[i].size();k++){
+            flood(i,k);
+        }
+    }
     return 0;
 }
