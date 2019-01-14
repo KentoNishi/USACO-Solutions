@@ -40,6 +40,12 @@ struct Block{
 
 vector<vector<Block>> grid;
 
+int flood(int x, int y, int prev=-1){
+    if(x>=0 && y>=0 && x<grid[0].size() && y <grid.size()&& grid[x][y].color==prev){
+        cout << x << ", " << y << endl;
+    }
+   return 0;
+}
 
 int main() {
     ofstream fout ("mooyomooyo.out");
@@ -49,16 +55,21 @@ int main() {
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
-    for(int i=1;i<inputstrings.size();i++){
+    for(int k=1;k<inputstrings.size();k++){
         grid.push_back({});
-        for(int k=0;k<10;k++){
+        for(int i=0;i<10;i++){
+            cout << k << " "<<i <<endl;
             Block thing=Block();
-            thing.color=stoi(string(1,inputstrings[i][k]));
+            thing.color=stoi(string(1,inputstrings[k-1][i]));
             thing.seen=false;
-            grid[i-1].push_back(thing);
+            grid[k-1].push_back(thing);
         }
     }
-    
+    for(int y=0;y<grid.size();y++){
+        for(int x=0;x<grid[0].size();x++){
+            flood(x,y);
+        }
+    }
     return 0;
 }
 
