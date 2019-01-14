@@ -40,13 +40,6 @@ struct Block{
 
 vector<vector<Block>> grid;
 
-int flood(int x, int y, int prev=-1){
-    if(x>=0 && y>=0 && x<grid[0].size() && y <grid.size()&& grid[x][y].color==prev){
-        cout << x << ", " << y << endl;
-    }
-   return 0;
-}
-
 int main() {
     ofstream fout ("mooyomooyo.out");
     ifstream fin ("mooyomooyo.in");
@@ -55,49 +48,18 @@ int main() {
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
-    for(int k=1;k<inputstrings.size();k++){
+    int streak=stoi(split(inputstrings[0]," ")[1]);
+    inputstrings.erase(inputstrings.begin());
+    for(int y=0;y<inputstrings.size();y++){
         grid.push_back({});
-        for(int i=0;i<10;i++){
-            cout << k << " "<<i <<endl;
-            Block thing=Block();
-            thing.color=stoi(string(1,inputstrings[k-1][i]));
-            thing.seen=false;
-            grid[k-1].push_back(thing);
-        }
-    }
-    for(int y=0;y<grid.size();y++){
-        for(int x=0;x<grid[0].size();x++){
-            flood(x,y);
+        vector<string> splitted=split(inputstrings[y]," ");
+        for(int x=0;x<10;x++){
+            cout << x << " " << y << endl;
+            Block block=Block();
+            block.color=stoi(splitted[x]);
+            block.seen=false;
+            grid[y][x]=block;
         }
     }
     return 0;
 }
-
-/*
-
-    for(int k=0;k<grid.size();k++){
-        for(int i=0;i<10;i++){
-            if(grid[i][k].seen==false){
-        //        cout << i << " " << k << endl;
-                flood(i,k);
-            }
-        }
-    }
-    */
-
-   /*vector<array<int,2>> stack;
-int flood(int x,int y,int fill=-1){
-    if(x<10&&y<grid.size()&&x>=0&&y>=0){
-        if(grid[x][y].color!=0&&(grid[x][y].color==fill||fill==-1)&&grid[x][y].seen==false){
-            cout << x << ", "<<y <<"-->"<<grid[x][y].color<< endl;
-            stack.push_back({x,y});
-            grid[x][y].seen=true;
-            flood(x+1,y,grid[x][y].color);
-            flood(x-1,y,grid[x][y].color);
-            flood(x,y+1,grid[x][y].color);
-            flood(x,y-1,grid[x][y].color);
-        }
-    }
-    return 0;
-}
-*/
