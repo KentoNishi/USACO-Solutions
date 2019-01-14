@@ -76,7 +76,7 @@ int main() {
     for(int i=0;i<grid.size();i++){
         for(int k=0;k<10;k++){
             if(grid[i][k].seen==false){
-                flood(i,k);
+                flood(k,i);
             }
         }
     }
