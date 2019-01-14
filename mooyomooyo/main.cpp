@@ -40,21 +40,6 @@ struct Block{
 
 vector<vector<Block>> grid;
 
-vector<array<int,2>> stack;
-int flood(int x,int y){
-    if(x<10&&y<grid.size()&&x>0&&y>0){
-        if(grid[x][y].color!=0&&grid[x][y].seen==false){
-            cout << x << ", "<<y <<"-->"<<grid[x][y].color<< endl;
-            stack.push_back({x,y});
-            grid[x][y].seen=true;
-            flood(x+1,y);
-            flood(x-1,y);
-            flood(x,y+1);
-            flood(x,y-1);
-        }
-    }
-    return 0;
-}
 
 int main() {
     ofstream fout ("mooyomooyo.out");
@@ -73,12 +58,35 @@ int main() {
             grid[i-1].push_back(thing);
         }
     }
-    for(int i=0;i<grid.size();i++){
-        for(int k=0;k<10;k++){
+    
+    return 0;
+}
+
+/*
+
+    for(int k=0;k<grid.size();k++){
+        for(int i=0;i<10;i++){
             if(grid[i][k].seen==false){
-                flood(k,i);
+        //        cout << i << " " << k << endl;
+                flood(i,k);
             }
+        }
+    }
+    */
+
+   /*vector<array<int,2>> stack;
+int flood(int x,int y,int fill=-1){
+    if(x<10&&y<grid.size()&&x>=0&&y>=0){
+        if(grid[x][y].color!=0&&(grid[x][y].color==fill||fill==-1)&&grid[x][y].seen==false){
+            cout << x << ", "<<y <<"-->"<<grid[x][y].color<< endl;
+            stack.push_back({x,y});
+            grid[x][y].seen=true;
+            flood(x+1,y,grid[x][y].color);
+            flood(x-1,y,grid[x][y].color);
+            flood(x,y+1,grid[x][y].color);
+            flood(x,y-1,grid[x][y].color);
         }
     }
     return 0;
 }
+*/
