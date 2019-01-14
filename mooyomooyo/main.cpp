@@ -38,12 +38,23 @@ struct Block{
     bool seen;
 };
 
+vector<vector<Block>> grid;
+
 vector<array<int,2>> stack;
 int flood(int x,int y){
-
+    if(x<10&&y<grid.size()&&x>0&&y>0){
+        if(grid[x][y].color!=0&&grid[x][y].seen==false){
+            cout << x << ", "<<y <<"-->"<<grid[x][y].color<< endl;
+            stack.push_back({x,y});
+            grid[x][y].seen=true;
+            flood(x+1,y);
+            flood(x-1,y);
+            flood(x,y+1);
+            flood(x,y-1);
+        }
+    }
+    return 0;
 }
-
-vector<vector<Block>> grid;
 
 int main() {
     ofstream fout ("mooyomooyo.out");
@@ -57,11 +68,13 @@ int main() {
         grid.push_back({});
         for(int k=0;k<10;k++){
             Block thing=Block();
+            thing.color=stoi(string(1,inputstrings[i][k]));
+            thing.seen=false;
             grid[i-1].push_back(thing);
         }
     }
     for(int i=0;i<grid.size();i++){
-        for(int k=0;k<grid[i].size();k++){
+        for(int k=0;k<10;k++){
             if(grid[i][k].seen==false){
                 flood(i,k);
             }
