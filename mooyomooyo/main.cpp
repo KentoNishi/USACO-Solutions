@@ -37,8 +37,27 @@ struct Block{
     int color;
     bool seen;
 };
+vector<array<int,2>> queue;
 
 vector<vector<Block>> grid;
+
+int flood(int x, int y, int prev){
+//    cout << prev << endl;
+//    cout <<grid.size()<<endl;
+//gdb
+    if( (x>=0 && y>=0 && x<10 && y<grid.size() && grid[y][x].seen==false && grid[y][x].color!=0 && grid[y][x].color==prev ) ==false){
+        return 0;
+    }
+    cout << x << ", " << y << " --> " << grid[y][x].color << endl;
+    queue.push_back({x,y});
+    grid[y][x].seen=true;
+    flood(x+1,y,grid[y][x].color);
+    flood(x-1,y,grid[y][x].color);
+    flood(x,y+1,grid[y][x].color);
+    flood(x,y-1,grid[y][x].color);
+
+   // return 0;
+}
 
 int main() {
     ofstream fout ("mooyomooyo.out");
@@ -52,13 +71,20 @@ int main() {
     inputstrings.erase(inputstrings.begin());
     for(int y=0;y<inputstrings.size();y++){
         grid.push_back({});
-        vector<string> splitted=split(inputstrings[y]," ");
+        string splitted=inputstrings[y];
         for(int x=0;x<10;x++){
-            cout << x << " " << y << endl;
+//            cout << x << " " << y << endl;
             Block block=Block();
-            block.color=stoi(splitted[x]);
+            block.color=stoi(string(1,splitted[x]));
             block.seen=false;
-            grid[y][x]=block;
+            grid[y].push_back(block);
+        }
+    }
+    for(int y=0;y<grid.size();y++){
+        for(int x=0;x<10;x++){
+            if(grid[y][x].seen==false){
+                flood(x,y,grid[y][x].color);
+            }
         }
     }
     return 0;
