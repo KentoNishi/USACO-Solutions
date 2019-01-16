@@ -48,7 +48,7 @@ int flood(int x, int y, int prev){
     if( (x>=0 && y>=0 && x<10 && y<grid.size() && grid[y][x].seen==false && grid[y][x].color!=0 && grid[y][x].color==prev ) ==false){
         return 0;
     }
-    cout << x << ", " << y << " --> " << grid[y][x].color << endl;
+//  cout << x << ", " << y << " --> " << grid[y][x].color << endl;
     queue.push_back({x,y});
     grid[y][x].seen=true;
     flood(x+1,y,grid[y][x].color);
@@ -84,6 +84,10 @@ int main() {
         for(int x=0;x<10;x++){
             if(grid[y][x].seen==false){
                 flood(x,y,grid[y][x].color);
+                if(queue.size()>streak){
+                    
+                }
+                queue={};
             }
         }
     }
