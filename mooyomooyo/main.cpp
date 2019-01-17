@@ -37,7 +37,13 @@ struct Block{
     int color;
     bool seen;
 };
-vector<array<int,2>> queue;
+
+struct Coord{
+    int x;
+    int y;
+};
+
+vector<Coord> queue;
 
 vector<vector<Block>> grid;
 
@@ -49,7 +55,10 @@ int flood(int x, int y, int prev){
         return 0;
     }
 //  cout << x << ", " << y << " --> " << grid[y][x].color << endl;
-    queue.push_back({x,y});
+    Coord point=Coord();
+    point.x=x;
+    point.y=y;
+    queue.push_back(point);
     grid[y][x].seen=true;
     flood(x+1,y,grid[y][x].color);
     flood(x-1,y,grid[y][x].color);
@@ -57,6 +66,21 @@ int flood(int x, int y, int prev){
     flood(x,y-1,grid[y][x].color);
 
    // return 0;
+}
+
+int gravity(){
+    for(int x=0;x<10;x++){
+        int bottom=grid.size()-1;
+        for(int y=grid.size()-1;y>=0;y--){
+            if(grid[y][x].color!=0 && y<bottom&&grid[bottom][x].color==0){
+                grid[bottom][x].color=grid[y][x].color;
+                grid[y][x].color=0;
+                bottom--;
+            }
+        }
+    }
+    cout << endl;
+    return 0;
 }
 
 int main() {
@@ -80,16 +104,36 @@ int main() {
             grid[y].push_back(block);
         }
     }
-    for(int y=0;y<grid.size();y++){
-        for(int x=0;x<10;x++){
-            if(grid[y][x].seen==false){
-                flood(x,y,grid[y][x].color);
-                if(queue.size()>streak){
-                    
-                }
-                queue={};
+    int clear=true;
+    while(clear==true){
+        for(int y=0;y<grid.size();y++){
+            for(int x=0;x<10;x++){
+                grid[y][x].seen=false;
             }
         }
+        clear=false;
+        for(int y=0;y<grid.size();y++){
+            for(int x=0;x<10;x++){
+                if(grid[y][x].seen==false){
+                    flood(x,y,grid[y][x].color);
+                    if(queue.size()>=streak){
+                        for(int i=0;i<queue.size();i++){
+//                            cout << grid[queue[i].y][queue[i].x].color << endl;
+                            grid[queue[i].y][queue[i].x].color=0;
+                        }
+                        clear=true;
+                    }
+                    queue={};
+                }
+            }
+        }
+        gravity();
+    }
+    for(int y=0;y<grid.size();y++){
+        for(int x=0;x<grid[y].size();x++){
+            fout << grid[y][x].color;
+        }
+        fout << endl;
     }
     return 0;
 }
