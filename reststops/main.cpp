@@ -83,7 +83,7 @@ void gravity(void)
   }   
 }*/
 
-
+/*
 int gravity(){
     for(int x=0;x<10;x++){
         int bottom=grid.size()-1;
@@ -103,14 +103,13 @@ int gravity(){
         }
     }
     return 0;
-}
-/*
+}*/
 
 int gravity(){
     for(int x=0;x<10;x++){
         int bottom=grid.size()-1;
         for(int y=grid.size()-1;y>=0;y--){
-            if(grid[y][x].color!=0 && grid[bottom][x].color==0){
+            if(grid[y][x].color!=0 && /*y<bottom&&*/ grid[bottom][x].color==0){
                 grid[bottom][x].color=grid[y][x].color;
          //       grid[y][x].color=0;
                 bottom--;
@@ -122,7 +121,7 @@ int gravity(){
     }
     return 0;
 }
-*/
+
 int main() {
     ofstream fout ("mooyomooyo.out");
     ifstream fin ("mooyomooyo.in");
