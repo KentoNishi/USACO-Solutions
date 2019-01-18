@@ -67,7 +67,6 @@ int flood(int x, int y, int prev){
 
    // return 0;
 }
-                grid[bottom][x].color=grid[y][x].color;
 
 /*
 void gravity(void)
