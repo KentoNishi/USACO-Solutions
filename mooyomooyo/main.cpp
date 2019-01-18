@@ -67,6 +67,29 @@ int flood(int x, int y, int prev){
 
    // return 0;
 }
+/*
+int gravity(){
+    for(int x=0;x<10;x++){
+        int bottom=grid.size()-1;
+        for(int y=grid.size()-2;y>=0;y--){
+            if(grid[y][x].color!=0 && y<bottom && grid[bottom][x].color==0){
+                
+                grid[bottom][x].color=grid[y][x].color;
+                grid[y][x].color=0;
+                for(int k=y;k>0;k--){
+                    grid[k][x].color=grid[k-1][x].color;
+                }
+                grid[0][x].color=0;
+                bottom--;
+            }
+        }
+    }
+    cout << endl;
+    return 0;
+}
+*/
+
+/*
 
 int gravity(){
     for(int x=0;x<10;x++){
@@ -80,6 +103,43 @@ int gravity(){
         }
     }
     cout << endl;
+    return 0;
+}
+
+*/
+/*
+void gravity(void)
+{
+  int N=grid.size();
+  for (int j=0; j<10; j++) {
+    int top = N-1, bottom = N-1;
+    while (top >= 0) {
+      while (top >= 0 && grid[top][j].color == 0) top--;
+      if (top >= 0)
+	grid[bottom--][j] = grid[top--][j];
+    }
+    while (bottom >= 0) grid[bottom--][j].color = 0;
+  }   
+}*/
+
+int gravity(){
+    for(int x=0;x<10;x++){
+        int bottom=grid.size()-1;
+        for(int y=grid.size()-1;y>=0;y+=0){
+            while(y>=0 && grid[y][x].color==0){
+                y--;
+            }
+            if(y>=0){
+                grid[bottom][x]=grid[y][x];
+                bottom--;
+                y--;
+            }
+        }
+        while(bottom>=0){
+            grid[bottom][x].color=0;
+            bottom--;
+        }
+    }
     return 0;
 }
 
