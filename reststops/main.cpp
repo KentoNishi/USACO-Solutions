@@ -2,7 +2,7 @@
    identification information */
 /*
 ID: kento241
-TASK: mooyomooyo
+TASK: reststops
 LANG: C++14                 
 */
 /* LANG can be C++11 or C++14 for those more recent releases */
