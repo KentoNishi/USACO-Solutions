@@ -30,7 +30,7 @@ vector<string> split(string str, string character){
         }
         i++;
     }
-    return result; 
+    return result;
 }
 
 int  main() {
