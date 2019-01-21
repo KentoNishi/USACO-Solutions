@@ -91,10 +91,40 @@ int  main() {
     int milkedSum=0;
     int ans=0;
     for(int i=0;i<cows.size();i++){
-        ans=max(ans,milkedSum+sumOf(renters,cows.size()-i));
-        
+        for(int k=0;k<farmers.size();k++){
+            if(farmers[k].max>cows[i]){
+                farmers[k].max-=cows[i];
+                milkedSum+=cows[i]*farmers[k].pay;
+                cows[i]=0;
+                break;
+            }else{
+                cows[i]-=farmers[k].max;
+                milkedSum+=farmers[k].max*farmers[k].pay;
+                farmers.erase(farmers.begin()+k);
+                k--;
+            }
+        }
+        ans=max(ans,milkedSum+sumOf(renters,cows.size()-i-1));
+//        cout<<milkedSum+sumOf(renters,cows.size()-i-1)<<endl;
     }
-    cout << ans << endl;
+
+    /*
+    for(int i=0;i<cows.size();i++){
+        ans=max(ans,milkedSum+sumOf(renters,cows.size()-i));
+        for(int k=0;k<farmers.size();k++){
+            if(farmers[k].max>=cows[i]){
+                milkedSum+=farmers[k].pay*cows[i];
+                farmers[k].max-=cows[i];
+                break;
+            }else{
+                milkedSum+=farmers[k].pay*farmers[k].max;
+                cows[i]-=farmers[k].max;
+                farmers.erase(farmers.begin()+k);
+                k--;
+            }
+        }
+    }*/
+    fout << ans << endl;
     /*
     for(int i=0;i<cows.size();i++){
         vector<Farmer> clone=farmers;
