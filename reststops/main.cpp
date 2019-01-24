@@ -2,7 +2,7 @@
    identification information */
 /*
 ID: kento241
-TASK: mooyomooyo
+TASK: reststops
 LANG: C++14                 
 */
 /* LANG can be C++11 or C++14 for those more recent releases */
@@ -17,11 +17,11 @@ using namespace std;
 
 vector<string> split(string str, string character){
     vector<string> result;
-    int s=0;
-    int i=0;
+    long long s=0;
+    long long i=0;
     while(i<str.length()){
         if(str[i]==character[0]||i==str.length()-1){
-            int x=i-s;
+            long long x=i-s;
             if(i==str.length()-1){
                 x++;
             }
@@ -34,11 +34,12 @@ vector<string> split(string str, string character){
 }
 
 struct Stop{
-    int location;
-    int tastiness;
+    long long location;
+    long long tastiness;
+    bool max;
 };
 
-int main() {
+int  main() {
     ofstream fout ("reststops.out");
     ifstream fin ("reststops.in");
     vector<string> inputstrings;
@@ -47,24 +48,41 @@ int main() {
         inputstrings.push_back(contents);
     }
     vector<string> firstLine=split(inputstrings[0]," ");
-    int distance=stoi(firstLine[0]);
-    int speedJohn=stoi(firstLine[1]);
-    int speedBessie=stoi(firstLine[2]);
+    long long distance=stoi(firstLine[0]);
+    long long speedJohn=stoi(firstLine[2]);
+    long long speedBessie=stoi(firstLine[3]);
     vector<Stop> stops;
-    for(int i=1;i<inputstrings.size();i++){
+    for(long long i=1;i<inputstrings.size();i++){
         Stop stop=Stop();
         vector<string> line=split(inputstrings[i]," ");
         stop.location=stoi(line[0]);
         stop.tastiness=stoi(line[1]);
         stops.push_back(stop);
     }
-    int total=0;
-    int current=0;
-    for(int i=0;i<stops.size();i++){
-        int walkedDist=stops[i].location-current;
-        int difference=walkedDist-(walkedDist*speedBessie)/(speedJohn);
-        cout << stops[i].tastiness*difference << endl;
-        current=stops[i].location;
+    
+    long long maximum=0;
+    for(long long i=stops.size()-1;i>=0;i--){
+        if(stops[i].tastiness>maximum){
+            stops[i].max=true;
+            maximum=stops[i].tastiness;
+        }else{
+            stops[i].max==false;
+        }
     }
+    long long total=0;
+    long long last=0;
+    long long secsJohn=0;
+    long long secsBessie=0;
+    for(long long i=0;i<stops.size();i++){
+        if(stops[i].max){
+            long long dist=stops[i].location-last;
+            secsBessie+=dist*speedBessie;
+            secsJohn+=dist*speedJohn;
+            total+=stops[i].tastiness*(secsJohn-secsBessie);
+            secsBessie=secsJohn;
+            last=stops[i].location;
+        }
+    }
+    fout << total << endl;
     return 0;
 }
