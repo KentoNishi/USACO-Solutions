@@ -84,6 +84,7 @@ void gravity(void)
 }*/
 
 
+
 int gravity(){
     for(int x=0;x<10;x++){
         int bottom=grid.size()-1;
