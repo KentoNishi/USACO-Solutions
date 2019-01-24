@@ -6,6 +6,7 @@ TASK: planting
 LANG: C++14                 
 */
 /* LANG can be C++11 or C++14 for those more recent releases */
+//http://usaco.org/index.php?page=viewproblem2&cpid=894
 #include <iostream>
 #include <fstream>
 #include <string>
