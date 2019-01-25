@@ -89,6 +89,8 @@ int main() {
                 if(queue.size()>largest.size()){
                     largest=queue;
                     perim=totalPerim;
+                }else if(queue.size()==largest.size()&&perim>totalPerim){
+                    perim=totalPerim;
                 }
                 totalPerim=0;
                 queue={};

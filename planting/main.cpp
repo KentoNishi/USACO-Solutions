@@ -34,30 +34,6 @@ vector<string> split(string str, string character){
     return result; 
 }
 
-struct Field{
-    vector<int> connections;
-    bool seen=false;
-    int grass;
-};
-
-vector<Field> fields;
-
-int visit(int id,int level=0,int prev=-1){
-    int ret=0;
-    if(fields[id].seen==false){
-        ret++;
-        fields[id].seen=true;
-        if(level<=1){
-            for(int i=0;i<fields[id].connections.size();i++){
-                if(fields[id].connections[i]!=prev){
-                    ret+=visit(fields[id].connections[i],level+1,id);
-                }
-            }
-        }
-    }
-    return ret;
-}
-
 int main() {
     ofstream fout ("planting.out");
     ifstream fin ("planting.in");
@@ -67,6 +43,9 @@ int main() {
         inputstrings.push_back(contents);
     }
     int nodes[100000];
+    for(int i=0;i<100000;i++){
+        nodes[i]=0;
+    }
     for(int i=1;i<inputstrings.size();i++){
         vector<string> spltln=split(inputstrings[i]," ");
         nodes[stoi(spltln[0])-1]++;
