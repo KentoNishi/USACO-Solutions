@@ -66,22 +66,16 @@ int main() {
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
-    for(int i=0;i<stoi(inputstrings[0]);i++){
-        Field field=Field();
-        field.grass=i;
-        fields.push_back(field);
-    }
+    int nodes[100000];
     for(int i=1;i<inputstrings.size();i++){
-        vector<string> splitLine=split(inputstrings[i]," ");
-        int larger=max(stoi(splitLine[0]),stoi(splitLine[1]));
-        int smaller=min(stoi(splitLine[0]),stoi(splitLine[1]));
-        fields[smaller-1].connections.push_back(larger-1);
-        fields[larger-1].connections.push_back(smaller-1);
+        vector<string> spltln=split(inputstrings[i]," ");
+        nodes[stoi(spltln[0])-1]++;
+        nodes[stoi(spltln[1])-1]++;
     }
-    int ans=0;
-    for(int i=0;i<fields.size();i++){
-        ans=max(ans,visit(i));
+    int maximum=0;
+    for(int i=0;i<100000;i++){
+        maximum=max(maximum,nodes[i]);
     }
-    fout << ans << endl;
+    fout << maximum+1 << endl;
     return 0;
 }
