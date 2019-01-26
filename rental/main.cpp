@@ -6,6 +6,7 @@ TASK: rental
 LANG: C++14                 
 */
 /* LANG can be C++11 or C++14 for those more recent releases */
+//http://usaco.org/index.php?page=viewproblem2&cpid=787
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -50,14 +51,6 @@ struct rev {
     }
 };
 
-int sumOf(vector<int> inp,int n){
-    int ret=0;
-    for(int i=0;i<n&&i<inp.size();i++){
-        ret+=inp[i];
-    }
-    return ret;
-}
-
 int  main() {
     //Too difficult, can't solve or understand at all
     ofstream fout ("rental.out");
@@ -85,76 +78,33 @@ int  main() {
     }
     sort(farmers.begin(),farmers.end(),comp());
     sort(renters.begin(),renters.end(),rev());
-    sort(cows.begin(),cows.end(),rev());
-    //have a prefix sum for the total, and find the max.
-    //loop through each cow.
-    int milkedSum=0;
-    int ans=0;
-    for(int i=0;i<cows.size();i++){
-        for(int k=0;k<farmers.size();k++){
-            if(farmers[k].max>cows[i]){
-                farmers[k].max-=cows[i];
-                milkedSum+=cows[i]*farmers[k].pay;
-                cows[i]=0;
-                break;
-            }else{
-                cows[i]-=farmers[k].max;
-                milkedSum+=farmers[k].max*farmers[k].pay;
-                farmers.erase(farmers.begin()+k);
-                k--;
-            }
-        }
-        ans=max(ans,milkedSum+sumOf(renters,cows.size()-i-1));
-//        cout<<milkedSum+sumOf(renters,cows.size()-i-1)<<endl;
-    }
-
-    /*
-    for(int i=0;i<cows.size();i++){
-        ans=max(ans,milkedSum+sumOf(renters,cows.size()-i));
-        for(int k=0;k<farmers.size();k++){
-            if(farmers[k].max>=cows[i]){
-                milkedSum+=farmers[k].pay*cows[i];
-                farmers[k].max-=cows[i];
-                break;
-            }else{
-                milkedSum+=farmers[k].pay*farmers[k].max;
-                cows[i]-=farmers[k].max;
-                farmers.erase(farmers.begin()+k);
-                k--;
-            }
-        }
-    }*/
-    fout << ans << endl;
-    /*
-    for(int i=0;i<cows.size();i++){
-        vector<Farmer> clone=farmers;
-        int milkLeft=cows[i];
-        int milkPrice=0;
-        for(int k=0;k<farmers.size();k++){
-            if(milkLeft==0){
-                break;
-            }
-            if(farmers[i].max>0){
-                if(milkLeft<farmers[k].max){ //still some more left to buy
-                    milkPrice+=farmers[k].pay*milkLeft;
-                    farmers[k].max-=milkLeft;
-                    milkLeft=0;
-                }else if(milkLeft>=farmers[k].max){ //still some more left to buy
-                    milkPrice+=farmers[k].pay*farmers[k].max;
-                    milkLeft-=farmers[k].max;
+    vector<int> scenarios;
+    int prev=0;
+    for(int i=-1;i==-1||i<cows.size();i++){
+        scenarios.push_back(prev);
+        if(i!=-1){
+            int amount=cows[i];
+            int moneyMilked=0;
+            for(int k=0;k<farmers.size();k++){
+                if(amount>farmers[k].max){
+                    moneyMilked+=farmers[k].max*farmers[k].pay;
+                    farmers[k].max=0;
+                    amount-=farmers[k].max;
+                    farmers.erase(farmers.begin()+k);
                     k--;
+                }else{
+                    moneyMilked+=farmers[k].pay*amount;
+                    amount=0;
+                    farmers[k].max-=amount;
+                    break;
                 }
             }
+            prev+=moneyMilked;
+            scenarios[scenarios.size()-1]=prev;
         }
-        int rentPrice=renters.size()>0?renters[0]:0;
-        if(rentPrice>milkPrice){
-            cout <<  "Rented cow "<<cows[i]<<" for "<<rentPrice<<endl;
-            renters.erase(renters.begin());
-            farmers=clone;
-        }else{
-            cout << "Milked cow "<< cows[i] << " for "<<milkPrice << endl;
-        }
-     //   cout << milkPrice << " " << rentPrice << endl;
-    }*/
+    }
+    for(int i=0;i<scenarios.size();i++){
+        cout << scenarios[i] << endl;
+    }
     return 0;
 }
