@@ -107,30 +107,25 @@ int  main() {
     }
     sort(farmers.begin(),farmers.end(),comp());
     sort(renters.begin(),renters.end(),rev());
-    vector<int> scenarios;
-    int prev=0;
-    for(int i=-1;i==-1||i<cows.size();i++){
-        scenarios.push_back(prev);
-        if(i!=-1){
-            int amount=cows[i];
-            int moneyMilked=0;
-            for(int k=0;k<farmers.size();k++){
-                if(amount>farmers[k].max){
-                    moneyMilked+=farmers[k].max*farmers[k].pay;
-                    farmers[k].max=0;
-                    amount-=farmers[k].max;
-                    farmers.erase(farmers.begin()+k);
-                    k--;
-                }else{
-                    moneyMilked+=farmers[k].pay*amount;
-                    amount=0;
-                    farmers[k].max-=amount;
-                    break;
-                }
+    sort(cows.begin(),cows.end(),rev());
+    vector<int> options={0};
+    int prevMilked=0;
+    for(int i=0;i<cows.size();i++){
+        for(int k=0;k<farmers.size();k++){
+            if(farmers[k].max>cows[i]){
+                farmers[k].max-=cows[i];
+                prevMilked+=farmers[k].pay*cows[i];
+                cows[i]=0;
+                break;
+            }else{
+                prevMilked+=farmers[k].pay*farmers[k].max;
+                cows[i]-=farmers[k].max;
+                farmers[k].max=0;
+                farmers.erase(farmers.begin()+k);
+                k--;
             }
-            prev+=moneyMilked;
-            scenarios[scenarios.size()-1]=prev;
         }
+        options.push_back(prevMilked);
     }
     for(int i=0;i<scenarios.size();i++){
         cout << scenarios[i] << endl;
