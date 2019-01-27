@@ -35,8 +35,8 @@ vector<string> split(string str, string character){
 }
 
 struct Shop{
-    int quantity;
-    int price;
+    long long quantity;
+    long long price;
 };
 
 struct comp {
@@ -46,13 +46,12 @@ struct comp {
 };
 
 struct rev {
-    bool operator()( int a,int b ) const { 
+    bool operator()( long long a,long long b ) const { 
         return a>b;
     }
 };
 
-int  main() {
-    //Too difficult, can't solve or understand at all
+int main() {
     ofstream fout ("rental.out");
     ifstream fin ("rental.in");
     vector<string> inputstrings;
@@ -61,13 +60,13 @@ int  main() {
         inputstrings.push_back(contents);
     }
     vector<string> firstLine=split(inputstrings[0]," ");
-    vector<int> milkProduced;
-    for(int i=1;i<=stoi(firstLine[0]);i++){
-        milkProduced.push_back(stoi(inputstrings[i]));
+    vector<long long> cows;
+    for(long long i=1;i<=stoi(firstLine[0]);i++){
+        cows.push_back(stoi(inputstrings[i]));
     }
-    sort(milkProduced.begin(),milkProduced.end(),rev());
+    sort(cows.begin(),cows.end(),rev());
     vector<Shop> shops;
-    for(int i=stoi(firstLine[0])+1;i<1+stoi(firstLine[0])+stoi(firstLine[1]);i++){
+    for(long long i=stoi(firstLine[0])+1;i<1+stoi(firstLine[0])+stoi(firstLine[1]);i++){
         vector<string> line=split(inputstrings[i]," ");
         Shop shop=Shop();
         shop.price=(stoi(line[1]));
@@ -75,60 +74,39 @@ int  main() {
         shops.push_back(shop);
     }
     sort(shops.begin(),shops.end(),comp());
-    vector<int> maxProfit;
-    for(int i=0;i<stoi(firstLine[0]);i++){
-        //continue
+    vector<long long> maxProfit;
+    for(long long i=0;i<stoi(firstLine[0])+1;i++){
+        maxProfit.push_back(0);
     }
-    vector<int> rental;
-    for(int i=stoi(firstLine[0])+stoi(firstLine[1])+1;i<stoi(firstLine[0])+stoi(firstLine[1])+stoi(firstLine[2])+1;i++){
+    long long index=0;
+    for(long long i=0;i<stoi(firstLine[0]);i++){
+        maxProfit[i+1]=maxProfit[i];
+        while(index<stoi(firstLine[1])&&cows[i]>0){
+            long long use=min(cows[i],shops[index].quantity);
+            maxProfit[i+1]+=use*shops[index].price;
+            cows[i]-=use;
+            shops[index].quantity-=use;
+            if(shops[index].quantity==0){
+                index++;
+            }
+        }
+    }
+    vector<long long> rental;
+    for(long long i=stoi(firstLine[0])+stoi(firstLine[1])+1;i<stoi(firstLine[0])+stoi(firstLine[1])+stoi(firstLine[2])+1;i++){
         rental.push_back(stoi(inputstrings[i]));
     }
     sort(rental.begin(),rental.end(),rev());
-    for(int i=0;i<stoi(firstLine[0])+1;i++){
-        maxProfit.push_back(0);
+    long long revRent=0;
+    long long prev=0;
+    for(long long i=stoi(firstLine[0])-1;i>=0&&revRent<stoi(firstLine[2]);i--){
+        prev+=rental[revRent];
+        maxProfit[i]+=prev;
+        revRent++;
     }
-    
-    /*
-    vector<string> params=split(inputstrings[0]," ");
-    vector<int> cows;
-    vector<Farmer> farmers;
-    vector<int> renters;
-    for(int i=0;i<stoi(params[0]);i++){
-        cows.push_back(stoi(inputstrings[i+1]));
+    long long ans=0;
+    for(long long i=0;i<maxProfit.size();i++){
+        ans=max(ans,maxProfit[i]);
     }
-    for(int i=0;i<stoi(params[1]);i++){
-        Farmer farmer=Farmer();
-        farmer.max=stoi(split(inputstrings[i+1+stoi(params[0])]," ")[0]);
-        farmer.pay=stoi(split(inputstrings[i+1+stoi(params[0])]," ")[1]);
-        farmers.push_back(farmer);
-    }
-    for(int i=0;i<stoi(params[2]);i++){
-        renters.push_back(stoi(inputstrings[i+1+stoi(params[0])+stoi(params[1])]));
-    }
-    sort(farmers.begin(),farmers.end(),comp());
-    sort(renters.begin(),renters.end(),rev());
-    sort(cows.begin(),cows.end(),rev());
-    vector<int> options={0};
-    int prevMilked=0;
-    for(int i=0;i<cows.size();i++){
-        for(int k=0;k<farmers.size();k++){
-            if(farmers[k].max>cows[i]){
-                farmers[k].max-=cows[i];
-                prevMilked+=farmers[k].pay*cows[i];
-                cows[i]=0;
-                break;
-            }else{
-                prevMilked+=farmers[k].pay*farmers[k].max;
-                cows[i]-=farmers[k].max;
-                farmers[k].max=0;
-                farmers.erase(farmers.begin()+k);
-                k--;
-            }
-        }
-        options.push_back(prevMilked);
-    }
-    for(int i=0;i<scenarios.size();i++){
-        cout << scenarios[i] << endl;
-    }*/
+    fout << ans << endl;
     return 0;
 }
