@@ -34,19 +34,19 @@ vector<string> split(string str, string character){
     return result;
 }
 
-struct Farmer{
-    int max;
-    int pay;
+struct Shop{
+    int quantity;
+    int price;
 };
 
 struct comp {
-    bool operator()( Farmer a,Farmer b ) const { 
-        return a.pay > b.pay;
+    bool operator()( Shop a, Shop b ) const { 
+        return a.price > b.price;
     }
 };
 
 struct rev {
-    bool operator()( int a, int b ) const { 
+    bool operator()( int a,int b ) const { 
         return a>b;
     }
 };
@@ -60,6 +60,35 @@ int  main() {
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
+    vector<string> firstLine=split(inputstrings[0]," ");
+    vector<int> milkProduced;
+    for(int i=1;i<=stoi(firstLine[0]);i++){
+        milkProduced.push_back(stoi(inputstrings[i]));
+    }
+    sort(milkProduced.begin(),milkProduced.end(),rev());
+    vector<Shop> shops;
+    for(int i=stoi(firstLine[0])+1;i<1+stoi(firstLine[0])+stoi(firstLine[1]);i++){
+        vector<string> line=split(inputstrings[i]," ");
+        Shop shop=Shop();
+        shop.price=(stoi(line[1]));
+        shop.quantity=(stoi(line[0]));
+        shops.push_back(shop);
+    }
+    sort(shops.begin(),shops.end(),comp());
+    vector<int> maxProfit;
+    for(int i=0;i<stoi(firstLine[0]);i++){
+        //continue
+    }
+    vector<int> rental;
+    for(int i=stoi(firstLine[0])+stoi(firstLine[1])+1;i<stoi(firstLine[0])+stoi(firstLine[1])+stoi(firstLine[2])+1;i++){
+        rental.push_back(stoi(inputstrings[i]));
+    }
+    sort(rental.begin(),rental.end(),rev());
+    for(int i=0;i<stoi(firstLine[0])+1;i++){
+        maxProfit.push_back(0);
+    }
+    
+    /*
     vector<string> params=split(inputstrings[0]," ");
     vector<int> cows;
     vector<Farmer> farmers;
@@ -105,6 +134,6 @@ int  main() {
     }
     for(int i=0;i<scenarios.size();i++){
         cout << scenarios[i] << endl;
-    }
+    }*/
     return 0;
 }
