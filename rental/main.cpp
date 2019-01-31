@@ -97,8 +97,7 @@ int main() {
     }
     sort(rental.begin(),rental.end(),rev());
     long long revRent=0;
-    long long prev=0;
-    for(long long i=stoi(firstLine[0])-1;i>=0&&revRent<stoi(firstLine[2]);i--){
+    long long prev=0;    for(long long i=stoi(firstLine[0])-1;i>=0&&revRent<stoi(firstLine[2]);i--){
         prev+=rental[revRent];
         maxProfit[i]+=prev;
         revRent++;
