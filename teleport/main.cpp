@@ -34,7 +34,6 @@ vector<string> split(string str, string character){
 }
 
 int  main() {
-    //Too difficult, can't solve or understand at all
     ofstream fout ("teleport.out");
     ifstream fin ("teleport.in");
     vector<string> inputstrings;
