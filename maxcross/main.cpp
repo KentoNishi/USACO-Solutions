@@ -2,7 +2,7 @@
    identification information */
 /*
 ID: kento241
-TASK: helpcross
+TASK: maxcross
 LANG: C++14                 
 */
 /* LANG can be C++11 or C++14 for those more recent releases */
@@ -41,13 +41,35 @@ struct comp {
 };
 
 int main() {
-    ofstream fout ("helpcross.out");
-    ifstream fin ("helpcross.in");
+    ofstream fout ("maxcross.out");
+    ifstream fin ("maxcross.in");
     vector<string> inputstrings;
     string contents;
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
     vector<string> firstLine=split(inputstrings[0]," ");
+    int minimum=stoi(firstLine[1]);
+    vector<int> broken;
+    for(int i=1;i<stoi(firstLine[2])+1;i++){
+        broken.push_back(stoi(inputstrings[i])-1);
+    }
+
+    sort(broken.begin(),broken.end());
+    int ans;
+    for(int i=0;i<broken.size()-1;i++){
+        if(broken[i+1]!=broken[i]+1){
+            int left=broken[i]+1;
+         //   cout << left << endl;
+            int toFix=0;
+            for(int k=i;k<broken.size()&&broken[k]<left+stoi(firstLine[1]);k++){
+                cout << broken[k] << " ";
+                toFix++;
+            }
+            cout <<"="<<toFix<< endl;
+            ans=min(toFix,ans);
+        }
+    }
+    fout << ans << endl;
     return 0;
 }
