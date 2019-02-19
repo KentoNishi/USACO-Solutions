@@ -40,6 +40,7 @@ struct comp {
     }
 };
 
+//XX##X###XX
 int main() {
     ofstream fout ("maxcross.out");
     ifstream fin ("maxcross.in");
@@ -56,20 +57,26 @@ int main() {
     }
 
     sort(broken.begin(),broken.end());
-    int ans;
-    for(int i=0;i<broken.size()-1;i++){
-        if(broken[i+1]!=broken[i]+1){
-            int left=broken[i]+1;
-         //   cout << left << endl;
+    int ans=0;
+    while(ans<stoi(firstLine[2])&&broken[ans]<=stoi(firstLine[1])){
+        ans++;
+    }
+    for(int i=0;i<broken.size();i++){//for each broken
+        if(broken[i]+1!=broken[i+1] && broken[i]+minimum<=stoi(firstLine[0])){
             int toFix=0;
-            for(int k=i;k<broken.size()&&broken[k]<left+stoi(firstLine[1]);k++){
-                cout << broken[k] << " ";
+            for(int k=i+1;k<broken.size() && broken[k]<=broken[i]+minimum;k++){
                 toFix++;
             }
-            cout <<"="<<toFix<< endl;
-            ans=min(toFix,ans);
+      //      cout << toFix << endl;
+            if(ans==-1){
+                ans=toFix;
+            }else{
+                ans=min(ans,toFix);
+            }
         }
     }
     fout << ans << endl;
     return 0;
 }
+
+//XX#X#X##XX#X#X##X#XXX

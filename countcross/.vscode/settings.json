@@ -7,6 +7,7 @@
         "unordered_map": "cpp",
         "vector": "cpp",
         "system_error": "cpp",
-        "limits": "cpp"
+        "limits": "cpp",
+        "iosfwd": "cpp"
     }
 }
