@@ -39,7 +39,7 @@ int main() {
   for (auto& measurement : measurements) {//for each measurement
     int& cow = cows[measurement.id]; //cow amount
     bool wasTop = cow == tied.begin()->first; //cow amount==first place
-    int wasTied = tied[cow]--; //if it was 2 the cow was tied, else was not
+    int wasTied = tied[cow]--; //if it was 1 the cow was tied, else was not
     if (wasTied == 1) {
       tied.erase(cow); //if was tied erase from list
     }
