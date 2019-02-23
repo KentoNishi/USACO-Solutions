@@ -1,63 +1,118 @@
+
 #include <iostream>
+#include <fstream>
+#include <string>
 #include <vector>
 #include <algorithm>
-#include <cstdio>
-#include <set>
+#include <array>
 #include <map>
- 
 using namespace std;
- 
-struct measurement {
-  int day;
-  int id;
-  int change;
-};
- 
-int main() {
-  ios_base::sync_with_stdio(false);
-  freopen("measurement.in", "r", stdin);
-  freopen("measurement.out", "w", stdout);
- 
-  int N;
-  int G;
-  cin >> N >> G;
- 
-  vector<measurement> measurements(N);
-  for (auto& measurement : measurements) {
-    cin >> measurement.day >> measurement.id >> measurement.change;
-  }
-  sort(measurements.begin(), measurements.end(), [](const measurement& a, const measurement& b) {
-    return a.day < b.day;
-  });
- 
-  map<int, int, greater<int> > tied;
-//  tied[0] = N + 1;
-  //tied[0]
- 
-  int result = 0;
-  map<int, int> cows;
-  for (auto& measurement : measurements) {//for each measurement
-    int& cow = cows[measurement.id]; //cow amount
-    bool wasTop = cow == tied.begin()->first; //cow amount==first place
-    int wasTied = tied[cow]--; //if it was 1 the cow was tied, else was not
-    if (wasTied == 1) {
-      tied.erase(cow); //if was tied erase from list
-    }
 
-    cow += measurement.change; //apply change
- 
-    int isTied = ++tied[cow]; // if it does not exist, set value to 1, else increase by 1
-    bool isTop = cow == tied.begin()->first; //if value is the same as first place
-    if (wasTop) { //if was top
-      if (!isTop || wasTied != 1 || isTied != 1) { //not top or was not tied or is not tied
-        ++result;
-      }
-    } else if (isTop) {//if cow is top
-      ++result;
+vector<string> split(string str, string character){
+    vector<string> result;
+    long long s=0;
+    long long i=0;
+    while(i<str.length()){
+        if(str[i]==character[0]||i==str.length()-1){
+            long long x=i-s;
+            if(i==str.length()-1){
+                x++;
+            }
+            result.push_back(str.substr(s,x));
+            s=i+1;
+        }
+        i++;
+    }
+    return result;
+}
+class Event{
+    public:
+        int date;
+        int id;
+        int change;
+        Event(int d, int i, int c){
+            date=d;
+            id=i;
+            change=c;
+        }
+};
+
+struct comp {
+    bool operator()(Event a,Event b) const { 
+        return a.date<b.date;
+    }
+};
+
+vector<int> findMax(vector<int> cows){
+  vector<int> result;
+  int maximum=0;
+  for(int i=0;i<cows.size();i++){
+    //be careful
+    maximum=max(maximum,cows[i]);
+  }
+  for(int i=0;i<cows.size();i++){
+    if(cows[i]==maximum){
+      result.push_back(i);
     }
   }
-  cout << result << endl;
- 
-  return 0;
+  return result;
 }
 
+int main() {
+    ofstream fout ("measurement.out");
+    ifstream fin ("measurement.in");
+    vector<string> inputstrings;
+    string contents;
+    while(getline(fin,contents)) {
+        inputstrings.push_back(contents);
+    }
+    vector<string> firstLine=split(inputstrings[0]," ");
+    int startAmount=stoi(firstLine[1]);
+    vector<Event> events;
+    int cowCount;
+    for(int i=1;i<inputstrings.size();i++){
+        vector<string> splitln=split(inputstrings[i]," ");
+        Event event=Event(stoi(splitln[0]),stoi(splitln[1])-1,stoi(splitln[2]));
+        events.push_back(event);
+        cowCount=max(cowCount,stoi(splitln[1])-1);
+    }
+    sort(events.begin(),events.end(),comp());
+    int ans=0;
+    int maximum=0;
+    vector<int> cows;
+    vector<int> top;
+    for(int i=0;i<cowCount+1;i++){
+      cows.push_back(startAmount);
+      top.push_back(i);
+    }
+    int prevDate;
+    for(int i=0;i<events.size();i++){
+      Event event=events[i];
+      prevDate=event.date;
+//      cout << cows.size() << "VS"<<event.id<<endl;
+      cows[event.id]+=event.change;
+      if(cows[event.id]>maximum){
+        top={event.id};
+        maximum=cows[event.id];
+        ans++;
+      }else if(cows[event.id]==maximum){
+        top.push_back(event.id);
+        ans++;
+      }else if(cows[event.id]<maximum){
+        auto found=find(top.begin(),top.end(),event.id);//DO NOT USE FIND, USE PAIR OF ERASE
+        if(found!=top.end()){
+          top.erase(found);
+          ans++;
+          if(top.size()==0){
+            top=findMax(cows);
+            for(int i=0;i<top.size();i++){
+              cout << top[i] << " = "<<cows[top[i]]<<"; ";
+            }
+            cout << endl;
+          }
+        }
+      }
+    }
+    fout << ans << endl;
+    return 0;
+}
