@@ -1,4 +1,11 @@
-
+/* Use the slash-star style comments or the system won't see your
+   identification information */
+/*
+ID: kento241
+TASK: measurement
+LANG: C++14                 
+*/
+/* LANG can be C++11 or C++14 for those more recent releases */
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -104,10 +111,10 @@ int main() {
           top.erase(found);
           ans++;
           if(top.size()==0){
-            top=findMax(cows);
+            top=findMax(cows);/*
             for(int i=0;i<top.size();i++){
               cout << top[i] << " = "<<cows[top[i]]<<"; ";
-            }
+            }*/
             cout << endl;
           }
         }
