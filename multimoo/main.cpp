@@ -46,6 +46,7 @@ struct Coord{
 
 struct Cell{
     int id;
+    bool seen=false;
     vector<Coord> adjacent;
     Cell(int i){
         id=i;
@@ -56,6 +57,27 @@ vector<vector<Cell>> grid;
 void addCell(Coord a, Coord b){
     grid[a.y][a.x].adjacent.push_back(b);
     grid[b.y][b.x].adjacent.push_back(a);
+}
+
+int regid=0;
+int visit(Cell cell){
+    if(cell.seen!=false){
+        return 0;
+    }
+    cell.seen=true;
+    int ans=cell.adjacent.size();
+    for(int i=0;i<cell.adjacent.size();i++){
+        
+    }
+}
+
+int largest(Cell cell){
+    int ans=0;
+    for(int i=0;i<cell.adjacent.size();i++){
+        ans=max(ans,visit(cell));
+        regid++;
+    }
+    return ans;
 }
 
 int main() {
@@ -73,6 +95,26 @@ int main() {
         for(int x=0;x<splitln.size();x++){
             grid[y].push_back(Cell(stoi(splitln[x])));
         }
+    }
+    for(int y=0;y<grid.size()-1;y++){
+        for(int x=0;x<grid[y].size()-1;x++){
+            if(grid[y][x].id==grid[y][x+1].id){
+                grid[y][x+1].adjacent.push_back(Coord(x,y));
+                grid[y][x].adjacent.push_back(Coord(x+1,y));
+            }
+            if(grid[y][x].id==grid[y+1][x].id){
+                grid[y][x].adjacent.push_back(Coord(x,y+1));
+                grid[y+1][x].adjacent.push_back(Coord(x,y));
+            }
+        }
+    }
+    int ans1=0;
+    for(int y=0;y<grid.size();y++){
+        for(int x=0;x<grid[y].size();x++){
+            ans1=max(ans1,largest(grid[y][x]));
+            /*cout << grid[y][x].adjacent.size() <<" ";*/
+        }
+        cout << endl;
     }
     return 0;
 }
