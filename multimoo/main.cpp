@@ -67,7 +67,7 @@ int visit(Cell cell){
     cell.seen=true;
     int ans=cell.adjacent.size();
     for(int i=0;i<cell.adjacent.size();i++){
-        
+        ans+=visit(cell.adjacent[i]);
     }
 }
 
