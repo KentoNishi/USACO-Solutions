@@ -47,37 +47,36 @@ struct Coord{
 struct Cell{
     int id;
     bool seen=false;
-    vector<Coord> adjacent;
     Cell(int i){
         id=i;
     }
 };
 
+struct Region{
+    int size=0;
+    map<int,int> adjacent;
+};
+
 vector<vector<Cell>> grid;
-void addCell(Coord a, Coord b){
-    grid[a.y][a.x].adjacent.push_back(b);
-    grid[b.y][b.x].adjacent.push_back(a);
-}
-
-int regid=0;
-int visit(Cell cell){
-    if(cell.seen!=false){
-        return 0;
+vector<Region> regions;
+void flood(int x, int y, int id){
+    if(x>=grid.size()||y>=grid.size()||x<0||y<0){
+        return;
     }
-    cell.seen=true;
-    int ans=cell.adjacent.size();
-    for(int i=0;i<cell.adjacent.size();i++){
-        ans+=visit(cell.adjacent[i]);
+    if(grid[y][x].id!=id){
+        regions[regions.size()-1].adjacent[grid[y][x].id]++;
+        return;
     }
-}
-
-int largest(Cell cell){
-    int ans=0;
-    for(int i=0;i<cell.adjacent.size();i++){
-        ans=max(ans,visit(cell));
-        regid++;
+    if(grid[y][x].seen){
+        return;
     }
-    return ans;
+    grid[y][x].seen=true;
+    regions[regions.size()-1].size++;
+    flood(x,y+1,id);
+    flood(x+1,y,id);
+    flood(x-1,y,id);
+    flood(x,y-1,id);
+    return;
 }
 
 int main() {
@@ -96,23 +95,20 @@ int main() {
             grid[y].push_back(Cell(stoi(splitln[x])));
         }
     }
-    for(int y=0;y<grid.size()-1;y++){
-        for(int x=0;x<grid[y].size()-1;x++){
-            if(grid[y][x].id==grid[y][x+1].id){
-                grid[y][x+1].adjacent.push_back(Coord(x,y));
-                grid[y][x].adjacent.push_back(Coord(x+1,y));
-            }
-            if(grid[y][x].id==grid[y+1][x].id){
-                grid[y][x].adjacent.push_back(Coord(x,y+1));
-                grid[y+1][x].adjacent.push_back(Coord(x,y));
+    for(int y=0;y<grid.size();y++){
+        for(int x=0;x<grid[y].size();x++){
+            if(grid[y][x].seen==false){
+                regions.push_back(Region());
+                flood(x,y,grid[y][x].id);
             }
         }
     }
-    int ans1=0;
-    for(int y=0;y<grid.size();y++){
-        for(int x=0;x<grid[y].size();x++){
-            ans1=max(ans1,largest(grid[y][x]));
-            /*cout << grid[y][x].adjacent.size() <<" ";*/
+    for(int i=0;i<regions.size();i++){
+        cout << "Region with size "<<regions[i].size<<" is adjacent to: ";
+        for(auto val : regions[i].adjacent ){
+            int& value = val.second;
+            int key = val.first;
+            cout << key<<" ["<<value<<"]"<<"   ";
         }
         cout << endl;
     }
