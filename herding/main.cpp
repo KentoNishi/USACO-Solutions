@@ -37,6 +37,25 @@ int sumOf(vector<int> arr){
 
 vector<int> cows;
 
+int best(){
+    if(cows[cows.size()-2]-cows[0]==cows.size()-2&&cows[cows.size()-1]-cows[cows.size()-2]>2){
+        return 2;
+    }
+    if(cows[cows.size()-1]-cows[1]==cows.size()-2&&cows[1]-cows[0]>2){
+        return 2;
+    }
+    int j=1;
+    int ans=0;
+    for(int i=0;i<cows.size();i++){
+        j=i+1;
+        while(j<cows.size()&&cows[j]-cows[i]<cows.size()){
+            j++;
+        }
+        ans=max(ans,j-i);
+    }
+    return cows.size()-ans;
+}
+
 int main() {
     ofstream fout ("herding.out");
     ifstream fin ("herding.in");
@@ -49,33 +68,8 @@ int main() {
         cows.push_back(stoi(inputstrings[i]));
 	}
 	sort(cows.begin(), cows.end());
-    int prev=cows[0];
-    vector<int> gaps;
-    for(int i=1;i<cows.size();i++){
-        if(cows[i]-prev-1>0){
-            gaps.push_back(cows[i]-prev-1);
-        }
-        prev=cows[i];
-    }
-    int ans1=-1;
-    int ans2=-1;
-    sort(gaps.begin(),gaps.end(),greater<int>());
-    if(gaps.size()!=0){
-        if(cows.size()==3){
-            if(cows[2]-cows[1]==2||cows[1]-cows[0]==2){
-                ans1=1;
-            }else{
-                ans1=2;
-            }
-        }else{
-            ans1=(float(sumOf(gaps)-min(gaps[0],gaps[gaps.size()-1]))/2)+1;
-        }
-        ans2=sumOf(gaps)-min(gaps[0],gaps[gaps.size()-1]);
-    }else{
-        ans1=0;
-        ans2=0;
-    }
-
+    int ans1=best();
+    int ans2=max(cows[cows.size()-2]-cows[0],cows[cows.size()-1]-cows[1])-(cows.size()-2);
     fout << ans1 <<endl<<ans2<< endl;
 	return 0;
 }

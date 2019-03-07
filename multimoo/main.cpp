@@ -47,38 +47,13 @@ struct Coord{
 struct Cell{
     int id;
     bool seen=false;
+    vector<Coord> edges;
     Cell(int i){
         id=i;
     }
 };
 
-struct Region{
-    int size=0;
-    map<int,int> adjacent;
-};
-
 vector<vector<Cell>> grid;
-vector<Region> regions;
-void flood(int x, int y, int id){
-    if(x>=grid.size()||y>=grid.size()||x<0||y<0){
-        return;
-    }
-    if(grid[y][x].id!=id){
-        regions[regions.size()-1].adjacent[grid[y][x].id]++;
-        return;
-    }
-    if(grid[y][x].seen){
-        return;
-    }
-    grid[y][x].seen=true;
-    regions[regions.size()-1].size++;
-    flood(x,y+1,id);
-    flood(x+1,y,id);
-    flood(x-1,y,id);
-    flood(x,y-1,id);
-    return;
-}
-
 int main() {
     ofstream fout ("multimoo.out");
     ifstream fin ("multimoo.in");
@@ -97,18 +72,22 @@ int main() {
     }
     for(int y=0;y<grid.size();y++){
         for(int x=0;x<grid[y].size();x++){
-            if(grid[y][x].seen==false){
-                regions.push_back(Region());
-                flood(x,y,grid[y][x].id);
+            if(x+1<grid.size()&&grid[y][x].id==grid[y][x+1].id){
+                grid[y][x].edges.push_back(Coord(x+1,y));
+                grid[y][x+1].edges.push_back(Coord(x,y));
+            }
+            if(y+1<grid.size()&&grid[y][x].id==grid[y+1][x].id){
+                grid[y][x].edges.push_back(Coord(x,y+1));
+                grid[y+1][x].edges.push_back(Coord(x,y));
             }
         }
     }
-    for(int i=0;i<regions.size();i++){
-        cout << "Region with size "<<regions[i].size<<" is adjacent to: ";
-        for(auto val : regions[i].adjacent ){
-            int& value = val.second;
-            int key = val.first;
-            cout << key<<" ["<<value<<"]"<<"   ";
+    for(int y=0;y<grid.size();y++){
+        for(int x=0;x<grid[y].size();x++){
+            if(grid[y][x].seen==false){
+                flood(x,y,grid[y][x].id);
+            }
+            cout << grid[y][x].edges.size() << " ";
         }
         cout << endl;
     }
