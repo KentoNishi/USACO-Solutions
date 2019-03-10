@@ -51,9 +51,34 @@ int main() {
         int a=stoi(splitln[0]);
         int b=stoi(splitln[1]);
         func+=abs(a-b);
-        if(abs(a)>abs(a-b)){
+        if(abs(a)<=abs(a-b)){
             slopes[b]+=2;
+            if(a<b&&a<0){
+                slopes[0]--;
+                slopes[2*b]--;
+            }
+            if(a<b&&a>=0){
+                slopes[2*(b-a)]--;
+                slopes[2*a]--;
+            }
+            if(a>=b&&a<0){
+                slopes[2*(b-a)]--;
+                slopes[2*a]--;
+            }
+            if(a>=b&&a>=0){
+                slopes[0]--;
+                slopes[2*b]--;
+            }
         }
     }
+    long long minFunc = func;
+    for (auto p : slopes) {
+        int new_y = p.first, delta_slope = p.second;
+        func += slope * (new_y - val);
+        val = new_y;
+        slope += delta_slope;
+        minFunc = min(minFunc, func);
+    }
+    fout << minFunc << endl;
     return 0;
 }
