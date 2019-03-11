@@ -50,7 +50,7 @@ struct Node{
     bool seen=false;
 };
 
-int dfs(int v, int k,unordered_map<int,Node> graph){
+int bfs(int v, int k,unordered_map<int,Node> graph){
     int ans=0;
     queue<int> queue;
     queue.push(v);
@@ -92,7 +92,7 @@ int main() {
         vector<string> splitln=split(inputstrings[i]," ");
         int v=stoi(splitln[1]);
         int k=stoi(splitln[0]);
-        fout << dfs(v,k,graph) << endl;
+        fout << bfs(v,k,graph) << endl;
     }
     return 0;
 }
