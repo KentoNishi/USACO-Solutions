@@ -54,6 +54,11 @@ struct Cell{
 };
 
 vector<vector<Cell>> grid;
+
+void flood(int x, int y, int id){
+
+}
+
 int main() {
     ofstream fout ("multimoo.out");
     ifstream fin ("multimoo.in");

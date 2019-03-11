@@ -13,6 +13,9 @@ LANG: C++14
 #include <set>
 #include <algorithm>
 #include <array>
+#include <map>
+#include <stack> 
+#include <unordered_map>
 using namespace std;
 
 vector<string> split(string str, string character){
@@ -30,24 +33,23 @@ vector<string> split(string str, string character){
         }
         i++;
     }
-    return result; 
+    return result;
 }
 
-struct Link{
-    int relevancy;
-    int video;
+struct Edge{
+    int id;
+    int weight;
+    Edge(int i,int w){
+        id=i;
+        weight=w;
+    }
 };
 
-struct Video{
-    vector<Link> related={};
+struct Node{
+    vector<Edge> edges;
 };
 
-struct Question{
-    int video;
-    int minimum;
-};
-
-int  main() {
+int main() {
     ofstream fout ("mootube.out");
     ifstream fin ("mootube.in");
     vector<string> inputstrings;
@@ -56,27 +58,37 @@ int  main() {
         inputstrings.push_back(contents);
     }
     vector<string> firstLine=split(inputstrings[0]," ");
-    int N=stoi(firstLine[0]);
-    array<Video,5000> videos;
-    for(int i=1;i<N;i++){ //each video
-        vector<string> currentLine=split(inputstrings[i]," ");
-        int child=max(stoi(currentLine[0]),stoi(currentLine[1]));
-        int parent=min(stoi(currentLine[0]),stoi(currentLine[1]));
-        Link link=Link();
-        link.relevancy=stoi(currentLine[2]);
-        link.video=child;
-        videos[parent].related.push_back(link);
-        link.video=parent;
-        videos[child].related.push_back(link);
+    map<int,Node> graph;
+    for(int i=1;i<stoi(firstLine[0]);i++){
+        vector<string> splitln=split(inputstrings[i]," ");
+        int a=stoi(splitln[0]);
+        int b=stoi(splitln[1]);
+        int w=stoi(splitln[2]);
+        graph[a].edges.push_back(Edge(b,w));
+        graph[b].edges.push_back(Edge(a,w));
     }
-    int Q=stoi(firstLine[1]);
-    vector<Question> questions;
-    for(int i=N;i<N+Q;i++){
-        Question question=Question();
-        vector<string> currentLine=split(inputstrings[i]," ");
-        question.video=stoi(currentLine[1]);
-        question.minimum=stoi(currentLine[0]);
-        questions.push_back(question);
+    for(int i=stoi(firstLine[0]);i<inputstrings.size();i++){
+        int ans=0;
+        vector<string> splitln=split(inputstrings[i]," ");
+        int v=stoi(splitln[1]);
+        int k=stoi(splitln[0]);
+        unordered_map<int,bool> seen;
+        stack<int> stack;
+        stack.push(v);
+        seen[v]=true;
+        while(!stack.empty()){
+            int id=stack.top();
+            stack.pop();
+            for(int i=0;i<graph[id].edges.size();i++){
+                Edge out=graph[id].edges[i];
+                if(seen[out.id]!=true&&out.weight>=k){
+                    seen[out.id]=true;
+                    stack.push(out.id);
+                    ans++;
+                }
+            }
+        }
+        fout << ans << endl;
     }
     return 0;
 }
