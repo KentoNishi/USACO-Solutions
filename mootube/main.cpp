@@ -14,7 +14,7 @@ LANG: C++14
 #include <algorithm>
 #include <array>
 #include <map>
-#include <stack> 
+#include <queue> 
 #include <unordered_map>
 using namespace std;
 
@@ -47,7 +47,28 @@ struct Edge{
 
 struct Node{
     vector<Edge> edges;
+    bool seen=false;
 };
+
+int dfs(int v, int k,unordered_map<int,Node> graph){
+    int ans=0;
+    queue<int> queue;
+    queue.push(v);
+    graph[v].seen=true;
+    while(!queue.empty()){
+        int id=queue.front();
+        queue.pop();
+        for(int i=0;i<graph[id].edges.size();i++){
+            Edge out=graph[id].edges[i];
+            if(graph[out.id].seen!=true&&out.weight>=k){
+                graph[out.id].seen=true;
+                queue.push(out.id);
+                ans++;
+            }
+        }
+    }
+    return ans;
+}
 
 int main() {
     ofstream fout ("mootube.out");
@@ -57,8 +78,8 @@ int main() {
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
+    unordered_map<int,Node> graph;
     vector<string> firstLine=split(inputstrings[0]," ");
-    map<int,Node> graph;
     for(int i=1;i<stoi(firstLine[0]);i++){
         vector<string> splitln=split(inputstrings[i]," ");
         int a=stoi(splitln[0]);
@@ -68,27 +89,10 @@ int main() {
         graph[b].edges.push_back(Edge(a,w));
     }
     for(int i=stoi(firstLine[0]);i<inputstrings.size();i++){
-        int ans=0;
         vector<string> splitln=split(inputstrings[i]," ");
         int v=stoi(splitln[1]);
         int k=stoi(splitln[0]);
-        unordered_map<int,bool> seen;
-        stack<int> stack;
-        stack.push(v);
-        seen[v]=true;
-        while(!stack.empty()){
-            int id=stack.top();
-            stack.pop();
-            for(int i=0;i<graph[id].edges.size();i++){
-                Edge out=graph[id].edges[i];
-                if(seen[out.id]!=true&&out.weight>=k){
-                    seen[out.id]=true;
-                    stack.push(out.id);
-                    ans++;
-                }
-            }
-        }
-        fout << ans << endl;
+        fout << dfs(v,k,graph) << endl;
     }
     return 0;
 }
