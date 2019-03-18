@@ -2,17 +2,10 @@
    identification information */
 /*
 ID: kento241
-TASK: cowcode
+TASK: template
 LANG: C++14                 
 */
 /* LANG can be C++11 or C++14 for those more recent releases */
-/*
-# # #
-
-# X #
-  - -
-# X|X
-*/
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -40,32 +33,13 @@ vector<string> split(string str, string character){
     return result;
 }
 
-char parse(string str, long long index){
-    if(index<str.length()){
-        return str[index];
-    }
-    long long length=str.length();
-    while(length*2<=index){
-        length*=2;
-    }
-    if(length==index){
-        return parse(str,index-1);
-    }else{
-        return parse(str,index-length-1);
-    }
-}
-
 int main() {
-    ofstream fout ("cowcode.out");
-    ifstream fin ("cowcode.in");
+    ofstream fout ("template.out");
+    ifstream fin ("template.in");
     vector<string> inputstrings;
     string contents;
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
-    vector<string> ln=split(inputstrings[0]," ");
-    string str=ln[0];
-    long long index=stoll(ln[1])-1;
-    fout << parse(str,index)<< endl;
     return 0;
 }
