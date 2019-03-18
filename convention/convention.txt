@@ -1,0 +1,7 @@
+In: A B C
+
+A: number of total people, <=B*C
+B: number of buses
+C: Number of people per bus
+
+Out: Min of max wait time
