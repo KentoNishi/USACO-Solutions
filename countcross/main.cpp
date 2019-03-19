@@ -6,6 +6,7 @@ TASK: countcross
 LANG: C++14                 
 */
 /* LANG can be C++11 or C++14 for those more recent releases */
+
 #include <iostream>
 #include <fstream>
 #include <string>
