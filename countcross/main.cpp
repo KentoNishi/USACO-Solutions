@@ -50,8 +50,10 @@ struct Coord{
 
 struct Field{
     vector<Coord> walls;
-    int cow=-1;
 };
+
+vector<vector<bool>> floodFill(Coord start){
+}
 
 int main() {
     ofstream fout ("countcross.out");
@@ -78,19 +80,23 @@ int main() {
         grid[ln[0]][ln[1]].walls.push_back(Coord(ln[2],ln[3]));
         grid[ln[2]][ln[3]].walls.push_back(Coord(ln[0],ln[1]));
     }
+    vector<Coord> cows;
     for(int i=stoi(firstLine[1])+1;i<inputstrings.size();i++){
-        vector<string> line=split(inputstrings[i]," ");
+        vector<string> line=split(inputstrings[i]," ",grid);
         vector<int> ln;
         for(int k=0;k<line.size();k++){
             ln.push_back(stoi(line[k])-1);
         }
-        grid[ln[0]][ln[1]].cow=i-(stoi(firstLine[1])+1);
+        cows.push_back(Coord(ln[0],ln[1]));
     }
-    for(int x=0;x<grid.size();x++){
-        for(int y=0;y<grid[x].size();y++){
-            cout << grid[x][y].cow << " ";
+    int ans=0;
+    for(int i=0;i<cows.size();i++){
+        vector<vector<bool>> canReach=floodFill(cows[i]);
+        for(int k=0;k<i;k++){
+            if(!canReach[cows[k].x][cows[k].y]){
+                ans++;
+            }
         }
-        cout << endl;
     }
     return 0;
 }
