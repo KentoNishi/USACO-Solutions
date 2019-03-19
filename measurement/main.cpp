@@ -5,13 +5,12 @@ ID: kento241
 TASK: measurement
 LANG: C++14                 
 */
-//TODO
 /* LANG can be C++11 or C++14 for those more recent releases */
-//http://usaco.org/index.php?page=viewproblem2&cpid=763
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
+#include <set>
 #include <algorithm>
 #include <array>
 #include <map>
@@ -34,38 +33,19 @@ vector<string> split(string str, string character){
     }
     return result;
 }
-class Event{
-    public:
-        int date;
-        int id;
-        int change;
-        Event(int d, int i, int c){
-            date=d;
-            id=i;
-            change=c;
-        }
+
+struct Measurement{
+    int day;
+    int cow;
+    int delta;
 };
 
 struct comp {
-    bool operator()(Event a,Event b) const { 
-        return a.date<b.date;
+    bool operator()( Measurement a, Measurement b ) const { 
+        return a.day < b.day;
     }
 };
 
-vector<int> findMax(vector<int> cows){
-  vector<int> result;
-  int maximum=0;
-  for(int i=0;i<cows.size();i++){
-    //be careful
-    maximum=max(maximum,cows[i]);
-  }
-  for(int i=0;i<cows.size();i++){
-    if(cows[i]==maximum){
-      result.push_back(i);
-    }
-  }
-  return result;
-}
 
 int main() {
     ofstream fout ("measurement.out");
@@ -75,52 +55,45 @@ int main() {
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
-    vector<string> firstLine=split(inputstrings[0]," ");
-    int startAmount=stoi(firstLine[1]);
-    vector<Event> events;
-    int cowCount;
+    vector<Measurement> measurements;
     for(int i=1;i<inputstrings.size();i++){
         vector<string> splitln=split(inputstrings[i]," ");
-        Event event=Event(stoi(splitln[0]),stoi(splitln[1])-1,stoi(splitln[2]));
-        events.push_back(event);
-        cowCount=max(cowCount,stoi(splitln[1])-1);
+        Measurement measurement=Measurement();
+        measurement.day=stoi(splitln[0]);
+        measurement.cow=stoi(splitln[1]);
+        measurement.delta=stoi(splitln[2]);
+        measurements.push_back(measurement);
     }
-    sort(events.begin(),events.end(),comp());
+    sort(measurements.begin(),measurements.end(),comp());
+    map<int,int> cows;
+    map<int, int, greater<int>> topList;
     int ans=0;
-    int maximum=0;
-    vector<int> cows;
-    vector<int> top;
-    for(int i=0;i<cowCount+1;i++){
-      cows.push_back(startAmount);
-      top.push_back(i);
-    }
-    int prevDate;
-    for(int i=0;i<events.size();i++){
-      Event event=events[i];
-      prevDate=event.date;
-//      cout << cows.size() << "VS"<<event.id<<endl;
-      cows[event.id]+=event.change;
-      if(cows[event.id]>maximum){
-        top={event.id};
-        maximum=cows[event.id];
-        ans++;
-      }else if(cows[event.id]==maximum){
-        top.push_back(event.id);
-        ans++;
-      }else if(cows[event.id]<maximum){
-        auto found=find(top.begin(),top.end(),event.id);//DO NOT USE FIND, USE PAIR OF ERASE
-        if(found!=top.end()){
-          top.erase(found);
-          ans++;
-          if(top.size()==0){
-            top=findMax(cows);/*
-            for(int i=0;i<top.size();i++){
-              cout << top[i] << " = "<<cows[top[i]]<<"; ";
-            }*/
-            cout << endl;
-          }
+    for(auto& event: measurements){
+        int& ref=cows[event.cow];
+        bool wasTop=(ref==topList.begin()->first);
+        int wasCnt=topList[ref]--;
+        if(wasCnt<=1){
+            topList.erase(ref);
         }
-      }
+        ref+=event.delta;
+        int isCnt=++topList[ref];
+        bool isTop=(ref==topList.begin()->first);
+        if(wasTop){
+            if(!isTop || wasCnt!=1 || isCnt!=1){
+                ++ans;
+            }
+        }else if(isTop){
+            ++ans;
+        }/*
+        for(auto cow:cows){
+            cout << cow.first << " " << cow.second <<endl;
+        }
+        cout << endl;
+        for(auto cow:topList){
+            cout << cow.first << " " << cow.second <<endl;
+        }
+        cout << "____________"<<endl;
+        */
     }
     fout << ans << endl;
     return 0;
