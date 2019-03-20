@@ -6,6 +6,7 @@ TASK: countcross
 LANG: C++14                 
 */
 /* LANG can be C++11 or C++14 for those more recent releases */
+//http://usaco.org/index.php?page=viewproblem2&cpid=716
 
 #include <iostream>
 #include <fstream>
@@ -13,6 +14,7 @@ LANG: C++14
 #include <vector>
 #include <set>
 #include <algorithm>
+#include <unordered_map>
 #include <array>
 using namespace std;
 
@@ -47,14 +49,10 @@ struct Coord{
         x=a;
         y=b;
     }
-};
+    Coord(){
 
-struct Field{
-    vector<Coord> walls;
+    }
 };
-
-void floodFill(int x, int y,vector<vector<bool>> &canReach){
-}
 
 int main() {
     ofstream fout ("countcross.out");
@@ -65,5 +63,14 @@ int main() {
         inputstrings.push_back(contents);
     }
     vector<string> firstLine=split(inputstrings[0]," ");
+    Coord walls[stoi(firstLine[0])][stoi(firstLine[0])];
+    for(int i=1;i<=stoi(firstLine[1]);i++){
+        vector<string> splitln=split(inputstrings[i]," ");
+        vector<int> coords;
+        for(int k=0;k<splitln.size();k++){
+            coords.push_back(stoi(splitln[k]));
+        }
+        
+    }
     return 0;
 }
