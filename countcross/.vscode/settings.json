@@ -8,6 +8,7 @@
         "vector": "cpp",
         "system_error": "cpp",
         "limits": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "hash_map": "cpp"
     }
 }
