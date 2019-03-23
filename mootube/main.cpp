@@ -37,39 +37,13 @@ vector<string> split(string str, string character){
 }
 
 struct Edge{
-    int id;
-    int weight;
-    Edge(int i,int w){
-        id=i;
-        weight=w;
+    int d;
+    int w;
+    Edge(int a, int b){
+        d=a;
+        w=b;
     }
 };
-
-struct Node{
-    vector<Edge> edges;
-};
-
-vector<vector<Edge>> edges;/*
-int bfs(int v, int k,bool seen[stoi(firstLine[0])]){
-    int ans=0;
-    queue<int> queue;
-    queue.push(v);
-    seen[v]=true;
-    while(!queue.empty()){
-        int id=queue.front();
-        queue.pop();
-        for(int i=0;i<edges.size();i++){
-            Edge out=edges[id][i];
-            cout << out.id << " " << out.weight << " " << k << endl;
-            if(seen[out.id]!=true&&out.weight>=k){
-                seen[out.id]=true;
-                queue.push(out.id);
-                ans++;
-            }
-        }
-    }
-    return ans;
-}*/
 
 int main() {
     ofstream fout ("mootube.out");
@@ -79,43 +53,42 @@ int main() {
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
-//    unordered_map<int,Node> seen;
     vector<string> firstLine=split(inputstrings[0]," ");
-    edges=vector<vector<Edge>>(stoi(firstLine[0]));
-    for(int i=0;i<stoi(firstLine[0]);i++){
+    int n=stoi(firstLine[0]);
+    int q=stoi(firstLine[1]);
+    vector<vector<Edge>> edges=vector<vector<Edge>>(n);
+    for(int i=0;i<n;i++){
         edges[i]={};
     }
-    for(int i=1;i<stoi(firstLine[0]);i++){
-        vector<string> splitln=split(inputstrings[i]," ");
-        int a=stoi(splitln[0])-1;
-        int b=stoi(splitln[1])-1;
-        int w=stoi(splitln[2]);
-        edges[a].push_back(Edge(b,w));
-        edges[b].push_back(Edge(a,w));
+    for(int a=1;a<n;a++){
+        vector<string> line=split(inputstrings[a]," ");
+        int x=stoi(line[0])-1;
+        int y=stoi(line[1])-1;
+        int w=stoi(line[2]);
+        edges[x].push_back(Edge(y,w));
+        edges[y].push_back(Edge(x,w));
     }
-    for(int i=stoi(firstLine[0]);i<inputstrings.size();i++){
-        vector<string> splitln=split(inputstrings[i]," ");
-        int v=stoi(splitln[1])-1;
-        int k=stoi(splitln[0]);
-        bool seen[stoi(firstLine[0])]; 
-        int ans=0;
+    for(int query=0;query<q;query++){
+        vector<string> line=split(inputstrings[n+query]," ");
+        int threshhold=stoi(line[0]);
+        int start=stoi(line[1])-1;
+        int ret=0;
         queue<int> queue;
-        queue.push(v);
-        seen[v]=true;
+        queue.push(start);
+        vector<bool> seen=vector<bool>(n);
+        seen[start]=true;
         while(!queue.empty()){
-            int id=queue.front();
+            int curr=queue.front();
             queue.pop();
-            for(int i=0;i<edges[id].size();i++){
-                Edge out=edges[id][i];
-//                cout << out.id << " " << out.weight << " " << k << endl;
-                if(seen[out.id]!=true&&out.weight>=k){
-                    seen[out.id]=true;
-                    queue.push(out.id);
-                    ans++;
+            for(Edge& out: edges[curr]){
+                if(!seen[out.d]&&out.w>=threshhold){
+                    seen[out.d]=true;
+                    queue.push(out.d);
+                    ret++;
                 }
             }
         }
-        fout << ans << endl;
+        fout << ret << endl;
     }
     return 0;
 }
