@@ -50,7 +50,7 @@ struct Node{
     bool seen=false;
 };
 
-int bfs(int v, int k,unordered_map<int,Node> graph){
+int bfs(int v, int k,array<Node,5001> graph){
     int ans=0;
     queue<int> queue;
     queue.push(v);
@@ -78,19 +78,20 @@ int main() {
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
-    unordered_map<int,Node> graph;
+//    unordered_map<int,Node> graph;
     vector<string> firstLine=split(inputstrings[0]," ");
+    array<Node,5001> graph;
     for(int i=1;i<stoi(firstLine[0]);i++){
         vector<string> splitln=split(inputstrings[i]," ");
-        int a=stoi(splitln[0]);
-        int b=stoi(splitln[1]);
+        int a=stoi(splitln[0])-1;
+        int b=stoi(splitln[1])-1;
         int w=stoi(splitln[2]);
         graph[a].edges.push_back(Edge(b,w));
         graph[b].edges.push_back(Edge(a,w));
     }
     for(int i=stoi(firstLine[0]);i<inputstrings.size();i++){
         vector<string> splitln=split(inputstrings[i]," ");
-        int v=stoi(splitln[1]);
+        int v=stoi(splitln[1])-1;
         int k=stoi(splitln[0]);
         fout << bfs(v,k,graph) << endl;
     }
