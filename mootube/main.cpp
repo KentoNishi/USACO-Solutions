@@ -50,7 +50,7 @@ struct Node{
     bool seen=false;
 };
 
-int bfs(int v, int k,Node graph[]){
+int bfs(int v, int k,unordered_map<int,Node> graph){
     int ans=0;
     queue<int> queue;
     queue.push(v);
@@ -78,11 +78,8 @@ int main() {
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
+    unordered_map<int,Node> graph;
     vector<string> firstLine=split(inputstrings[0]," ");
-    Node graph[5000];
-    for(int i=0;i<5000;i++){
-        graph[i]=Node();
-    }
     for(int i=1;i<stoi(firstLine[0]);i++){
         vector<string> splitln=split(inputstrings[i]," ");
         int a=stoi(splitln[0]);
