@@ -9,6 +9,7 @@
         "system_error": "cpp",
         "limits": "cpp",
         "iosfwd": "cpp",
-        "functional": "cpp"
+        "functional": "cpp",
+        "array": "cpp"
     }
 }
