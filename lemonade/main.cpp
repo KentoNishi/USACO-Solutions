@@ -1,18 +1,4 @@
-/* Use the slash-star style comments or the system won't see your
-   identification information */
-/*
-ID: kento241
-TASK: lemonade
-LANG: C++14                 
-*/
-/* LANG can be C++11 or C++14 for those more recent releases */
-/*
-# # #
-
-# X #
-  - -
-# X|X
-*/
+//http://usaco.org/index.php?page=viewproblem2&cpid=835
 #include <iostream>
 #include <fstream>
 #include <string>

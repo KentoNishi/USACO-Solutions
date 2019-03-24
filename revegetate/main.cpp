@@ -1,3 +1,4 @@
+//http://usaco.org/index.php?page=viewproblem2&cpid=920
 #include <iostream>
 #include <algorithm>
 #include <string>
