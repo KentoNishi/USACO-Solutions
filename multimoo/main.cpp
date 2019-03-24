@@ -85,9 +85,7 @@ int main() {
             if(grid[y][x].seen==false){
                 flood(x,y,grid[y][x].id);
             }
-            cout << grid[y][x].edges.size() << " ";
         }
-        cout << endl;
     }
     return 0;
 }
