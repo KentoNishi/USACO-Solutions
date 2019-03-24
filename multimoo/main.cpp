@@ -37,10 +37,6 @@ struct Graph{
 
 vector<vector<int>> grid;
 
-void flood(int x, int y, int id){
-
-}
-
 array<array<int,1001>,1001> cellID;
 array<array<int,1001>,1001> cow;
 int N=0;
