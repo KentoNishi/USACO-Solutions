@@ -46,6 +46,27 @@ int main() {
         int c=stoi(line[2]);
         int d=stoi(line[3]);
         grid[a][b]++;
+        grid[c][d]++;
+        grid[c][b]--;
+        grid[a][d]--;
     }
+    int ans=0;
+    for(int x=0;x<1001;x++){
+        for(int y=0;y<1001;y++){
+            if(x>0){
+                grid[x][y]+=grid[x-1][y];
+            }
+            if(y>0){
+                grid[x][y]+=grid[x][y-1];
+            }
+            if(x>0&&y>0){
+                grid[x][y]-=grid[x-1][y-1];
+            }
+            if(grid[x][y]==match){
+                ans++;
+            }
+        }
+    }
+    fout << ans << endl;
 	return 0;
 }
