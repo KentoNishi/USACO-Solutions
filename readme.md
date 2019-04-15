@@ -2,7 +2,7 @@
 USACO Silver solutions (problems from [http://www.usaco.org](http://www.usaco.org)).
 
 ## About
-Solutions are written in C++, and the file is named ``main.cpp``. ``[name].in`` and ``[name].out`` contains the given sample in the specific problem.
+Solutions are written in C++, and the file is named ``main.cpp``. ``[name].in`` and ``[name].out`` contains the given example in the specific problem.
 Extra files such as ``result`` (the compiled program) and ``solution.[format]`` (the official solution) may be included in the problem directory.
 
 ## Other Information
