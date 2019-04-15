@@ -1,3 +1,4 @@
+//http://usaco.org/index.php?page=viewproblem2&cpid=943
 /* Use the slash-star style comments or the system won't see your
    identification information */
 /*
@@ -8,85 +9,127 @@ LANG: C++14
 /* LANG can be C++11 or C++14 for those more recent releases */
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <vector>
 #include <set>
 #include <algorithm>
-#include <array>
 using namespace std;
+typedef long long LL;
 
-struct Point {
-    int x,y;
-    Point(int a, int b){
-        x=a;
-        y=b;
-    }
+int N;
+double x;
+struct Point{
+    LL x, y;
+    int segindex;
 };
 
-bool isIntersecting(Point& p1, Point& p2, Point& q1, Point& q2) {
-    return (((q1.x-p1.x)*(p2.y-p1.y) - (q1.y-p1.y)*(p2.x-p1.x))
-            * ((q2.x-p1.x)*(p2.y-p1.y) - (q2.y-p1.y)*(p2.x-p1.x)) < 0)
-            &&
-           (((p1.x-q1.x)*(q2.y-q1.y) - (p1.y-q1.y)*(q2.x-q1.x))
-            * ((p2.x-q1.x)*(q2.y-q1.y) - (p2.y-q1.y)*(q2.x-q1.x)) < 0);
+struct Segment{
+    Point p, q;
+    int index;
+};
+
+bool operator<(Point p1, Point p2) {
+    return p1.x == p2.x ? p1.y < p2.y : p1.x < p2.x;
 }
 
+int sign(LL x){
+    if (x == 0)
+        return 0;
+    else
+        return x < 0 ? -1 : +1;
+}
 
-vector<string> split(string str, string character){
-    vector<string> result;
-    long long s=0;
-    long long i=0;
-    while(i<str.length()){
-        if(str[i]==character[0]||i==str.length()-1){
-            long long x=i-s;
-            if(i==str.length()-1){
-                x++;
+int operator*(Point p1, Point p2) {
+    return sign(p1.x * p2.y - p1.y * p2.x);
+}
+
+Point operator-(Point p1, Point p2){
+    Point p = {p1.x - p2.x, p1.y - p2.y};
+    return p;
+}
+
+bool isect(Segment &s1, Segment &s2){
+    Point &p1 = s1.p, &q1 = s1.q, &p2 = s2.p, &q2 = s2.q;
+    return ((q2 - p1) * (q1 - p1)) * ((q1 - p1) * (p2 - p1)) >= 0 && ((q1 - p2) * (q2 - p2)) * ((q2 - p2) * (p1 - p2)) >= 0;
+}
+
+double eval(Segment s){
+    if (s.p.x == s.q.x){
+        return s.p.y;
+    }
+    return s.p.y + (s.q.y - s.p.y) * (x - s.p.x) / (s.q.x - s.p.x);
+}
+
+bool operator<(Segment s1, Segment s2) {
+    return s1.index != s2.index && eval(s1) < eval(s2);
+}
+
+bool operator==(Segment s1, Segment s2) {
+    return s1.index == s2.index;
+}
+
+int main(void)
+{
+    ifstream fin("cowjump.in");
+    vector<Segment> S;
+    vector<Point> P;
+
+    fin >> N;
+    for (int i = 0; i < N; i++){
+        Segment s;
+        fin >> s.p.x >> s.p.y >> s.q.x >> s.q.y;
+        s.index = s.p.segindex = s.q.segindex = i;
+        S.push_back(s);
+        P.push_back(s.p);
+        P.push_back(s.q);
+    }
+    sort(P.begin(), P.end());
+
+    set<Segment> active;
+    int ans1, ans2;
+    for (int i = 0; i < N * 2; i++){
+        ans1 = P[i].segindex;
+        x = P[i].x;
+        auto it = active.find(S[ans1]);
+        if (it != active.end()){
+            auto after = it, before = it;
+            after++;
+            if (before != active.begin() && after != active.end()){
+                before--;
+                if (isect(S[before->index], S[after->index])){
+                    ans1 = before->index;
+                    ans2 = after->index;
+                    break;
+                }
             }
-            result.push_back(str.substr(s,x));
-            s=i+1;
+            active.erase(it);
         }
-        i++;
-    }
-    return result;
-}
-
-struct comp {
-    bool operator()(pair<Point,Point> a, pair<Point,Point> b) const { 
-        return a.first.x < b.first.x;
-    }
-};
-
-int main() {
-    ofstream fout ("cowjump.out");
-    ifstream fin ("cowjump.in");
-    vector<string> inputstrings;
-    string contents;
-    while(getline(fin,contents)) {
-        inputstrings.push_back(contents);
-    }
-    vector<pair<Point,Point>> lines;
-    for(int i=1;i<inputstrings.size();i++){
-        vector<string> line=split(inputstrings[i]," ");
-        int a=stoi(line[0]);
-        int b=stoi(line[1]);
-        int c=stoi(line[2]);
-        int d=stoi(line[3]);
-        lines.push_back(make_pair(Point(a,b),Point(c,d)));
-    }
-    sort(lines.begin(),lines.end(),comp());
-    vector<int> counts=vector<int>(lines.size());
-    for(int i=0;i<lines.size();i++){
-        for(int k=i+1;k<lines.size();k++){
-            if(lines[k].second.x<lines[i].second.x){
-                counts[i]++;
-                counts[k]++;
-            }else{
+        else{
+            auto it = active.lower_bound(S[ans1]);
+            if (it != active.end() && isect(S[it->index], S[ans1])){
+                ans2 = it->index;
                 break;
             }
+            if (it != active.begin()){
+                it--;
+                if (isect(S[it->index], S[ans1])){
+                    ans2 = it->index;
+                    break;
+                }
+            }
+            active.insert(S[ans1]);
         }
     }
-    for(int i=0;i<counts.size();i++){
-        cout << counts[i] << endl;
+
+    if (ans1 > ans2){
+        swap(ans1, ans2);
     }
+    int ans2_count = 0;
+    for (int i = 0; i < N; i++){
+        if (S[i].index != ans2 && isect(S[i], S[ans2])){
+            ans2_count++;
+        }
+    }
+    ofstream fout("cowjump.out");
+    fout << (ans2_count > 1 ? ans2 + 1 : ans1 + 1) << endl;
     return 0;
 }

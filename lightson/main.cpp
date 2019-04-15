@@ -1,3 +1,4 @@
+//http://usaco.org/index.php?page=viewproblem2&cpid=570
 /* Use the slash-star style comments or the system won't see your
    identification information */
 /*
@@ -45,47 +46,49 @@ struct Coord{
 struct Room{
     vector<Coord> switches;
     bool lit=false;
-    bool seen=false;
+    bool visited=false;
 };
 vector<vector<Room>> farm;
+vector<int> dx = {-1,1,0,0};
+vector<int> dy = {0,0,-1,1};
 
-int ans=1;
+bool isVisited(int x, int y){
+    return x>=0&&x<farm.size()&&y>=0&&y<farm.size()&&farm[x][y].visited;
+}
+
+bool isOn(int x, int y){
+    return x>=0&&x<farm.size()&&y>=0&&y<farm.size()&&farm[x][y].lit;
+}
+
+bool hasNeighbor(int x, int y){
+    for(int k=0;k<dx.size();k++){
+        if(isOn(x+dx[k],y+dy[k])&&isVisited(x+dx[k],y+dy[k])){
+            return true;
+        }
+    }
+    return false;
+}
+
 void flood(int x, int y){
-//    cout << x<<"," << y << endl;
-    if(x>=farm.size()||y>=farm.size()||x<0||y<0){
+    if(isVisited(x,y)){
         return;
     }
-    if(farm[x][y].seen){
-        return;
-    }
-    farm[x][y].seen=true;
-    if(farm[x][y].lit==false){
-        return;
-    }
-    for(int i=0;i<farm[x][y].switches.size();i+=0){
-        if(farm[farm[x][y].switches[i].x][farm[x][y].switches[i].y].lit==false){
-            ans++;
-        }
-        farm[farm[x][y].switches[i].x][farm[x][y].switches[i].y].lit=true;
-        farm[farm[x][y].switches[i].x][farm[x][y].switches[i].y].seen=false;
-        int a=farm[x][y].switches[i].x;
-        int b=farm[x][y].switches[i].y;
-        farm[x][y].switches.erase(farm[x][y].switches.begin());
-        if(x>0&&farm[x-1][y].lit==true){
-            flood(a,b);
-        }else if(y>0&&farm[x][y-1].lit==true){
-            flood(a,b);
-        }else if(x<farm.size()-1&&farm[x+1][y].lit==true){
-            flood(a,b);
-        }else if(y<farm.size()-1&&farm[x][y+1].lit==true){
-            flood(a,b);
+    farm[x][y].visited=true;
+    for(auto &next: farm[x][y].switches){
+        if(!farm[next.x][next.y].lit){
+            farm[next.x][next.y].lit=true;
+            if(hasNeighbor(next.x,next.y)){
+                flood(next.x,next.y);
+            }
         }
     }
-    flood(x+1,y);
-    flood(x,y+1);
-    flood(x-1,y);
-    flood(x,y-1);
-    return;
+    for(int k = 0; k < dx.size(); k++) {
+        int nx = x + dx[k];
+        int ny = y + dy[k];
+        if(isOn(nx, ny)) {
+            flood(nx, ny);
+        }
+    }
 }
 
 int main() {
@@ -114,6 +117,16 @@ int main() {
     }
     farm[0][0].lit=true;
     flood(0,0);
+    int ans=0;
+    for(int x=0;x<farm.size();x++){
+        for(int y=0;y<farm[x].size();y++){
+            if(farm[x][y].lit){
+                ans++;
+            }
+            cout << farm[y][x].lit << " ";
+        }
+        cout << endl;
+    }
     fout << ans << endl;
     return 0;
 }
