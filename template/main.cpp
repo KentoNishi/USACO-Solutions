@@ -33,6 +33,12 @@ vector<string> split(string str, string character){
     return result;
 }
 
+struct compare {
+    bool operator()(int a,int b) const { 
+        return a < b;
+    }
+};
+
 int main() {
     ofstream fout ("template.out");
     ifstream fin ("template.in");
