@@ -35,9 +35,9 @@ vector<string> split(string str, string character){
 }
 
 struct Cow{
-    int seniority;
     int arrival;
     int duration;
+    int seniority;
 };
 
 struct sortOrder {
@@ -48,29 +48,30 @@ struct sortOrder {
 
 struct sortRank {
     bool operator()(Cow a,Cow b) const { 
-        return a.seniority > b.seniority;
+        return a.seniority < b.seniority;
     }
 };
 
-vector<Cow> allCows;
+vector<Cow> cows;
+
 int solve(){
     int ans=0;
-    priority_queue<Cow,vector<Cow>,sortRank> cowLine;
-    int next=1;
-    int endTime=allCows[0].arrival+allCows[0].duration;
-    while(next<allCows.size()||cowLine.size()>0){
-        while(next<allCows.size()&&allCows[next].arrival<=endTime){
-            cowLine.push(allCows[next]);
-            next++;
+    set<Cow,sortRank> line;
+    int currentTime=cows[0].arrival+cows[0].duration;
+    int nextCow=1;
+    while(nextCow<cows.size() || line.size()>0){
+        while(nextCow<cows.size() && cows[nextCow].arrival<=currentTime){
+            line.insert(cows[nextCow]);
+            nextCow++;
         }
-        if(cowLine.size()==0&&next<allCows.size()){
-            endTime=allCows[next].arrival+allCows[next].duration;
-            next++;
-        }
-        while(cowLine.size()>0){
-            ans=max(ans,endTime-cowLine.top().arrival);
-            endTime+=cowLine.top().duration;
-            cowLine.pop();
+        if(nextCow<cows.size() && line.size()==0){
+            currentTime=cows[nextCow].arrival+cows[nextCow].duration;
+            nextCow++;
+        }else if(line.size()>0){
+            auto cow=line.begin();
+            ans=max(ans,currentTime-(cow->arrival));
+            currentTime+=(cow->duration);
+            line.erase(cow);
         }
     }
     return ans;
@@ -92,9 +93,9 @@ int main() {
         cow.seniority=i;
         cow.arrival=arrival;
         cow.duration=duration;
-        allCows.push_back(cow);
+        cows.push_back(cow);
     }
-    sort(allCows.begin(),allCows.end(),sortOrder());
+    sort(cows.begin(),cows.end(),sortOrder());
     fout << solve() << endl;
     return 0;
 }
