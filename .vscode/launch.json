@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "result",
-            "args": [],
+            "args": ["-fThreading"],
             "stopAtEntry": false,
             "cwd": ".",
             "environment": [],
@@ -18,15 +18,20 @@
                 "debuggerPath": "cd $(wslpath '${fileDirname}') && g++ ${fileBasename} -o result -g -Wall && stdbuf -i0 -o0 -e0 gdb",
                 "pipeProgram": "${env:windir}\\system32\\bash.exe",
                 "pipeArgs": ["-c"],
-                "pipeCwd": ""
+                "pipeCwd": "",
+                "ignoreFailures": true
             },
+            "MIMode": "gdb",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
                 }
-            ]
+            ],
+            "sourceFileMap": {
+                "/mnt/c": "c:\\"
+            }
         }
     ]
 }
