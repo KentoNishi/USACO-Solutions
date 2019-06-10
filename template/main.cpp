@@ -1,11 +1,3 @@
-/* Use the slash-star style comments or the system won't see your
-   identification information */
-/*
-ID: kento241
-TASK: template
-LANG: C++14                 
-*/
-/* LANG can be C++11 or C++14 for those more recent releases */
 #include <iostream>
 #include <fstream>
 #include <string>
