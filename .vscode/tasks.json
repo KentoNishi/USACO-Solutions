@@ -6,7 +6,7 @@
         {
             "label": "Build and run C++",
             "type": "shell",
-            "command": "wsl g++ -std=c++11 main.cpp -g -o result;./result;rm result;",
+            "command": "wsl g++ -std=c++11 main.cpp -g -o result;./result;",
             "group": {
                 "kind": "build",
                 "isDefault": true
