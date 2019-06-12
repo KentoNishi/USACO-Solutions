@@ -6,7 +6,7 @@
         {
             "label": "Build and run C++",
             "type": "shell",
-            "command": "wsl eval \"truncate -s 0 ${PWD##*/}.out;g++ -std=c++11 main.cpp -g -o result;time ./result;echo;cat ${PWD##*/}.out;\"",
+            "command": "g++ -std=c++11 main.cpp -g -o result;time ./result;echo;echo;find . -type f -name \"*.out\" -exec cat {} +;echo;",
             "group": {
                 "kind": "build",
                 "isDefault": true
