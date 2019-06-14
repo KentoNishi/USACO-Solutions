@@ -40,5 +40,29 @@ int main() {
     while(getline(fin,contents)) {
         inputstrings.push_back(contents);
     }
+    vector<string> line2=split(inputstrings[1]," ");
+    vector<int> points;
+    for(string &item:line2){
+        points.push_back(stoi(item));
+    }
+    int total=points[points.size()-1];
+    int minimum=points[points.size()-1];
+    float maximumMean=0;
+    vector<int> answers;
+    for(int k=points.size()-2;k>0;k--){
+        total+=points[k];
+        minimum=min(minimum,points[k]);
+        float currentMean=float((total-minimum))/float(points.size()-1-k);
+        if(currentMean>maximumMean){
+            maximumMean=currentMean;
+            answers={k};
+        }else if(currentMean==maximumMean){
+            answers.push_back(k);
+        }
+    }
+    sort(answers.begin(),answers.end());
+    for(int &k:answers){
+        fout << k << endl;
+    }
     return 0;
 }
