@@ -1,18 +1,28 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
+    "windows": {
+        "options": {
+            "shell": {
+                "executable": "bash.exe",
+                "args": ["-c"]
+            },
+            "cwd":"${fileDirname}"
+        }
+    },
     "tasks": [
         {
-            "label": "Build and run C++",
+            "label": "Build on WSL",
             "type": "shell",
-            "command": "g++ -std=c++11 main.cpp -g -o result;time ./result;echo;echo;find . -type f -name \"*.out\" -exec cat {} +;echo;",
+            "command": "g++",
+            "args": [
+                "-g",
+                "-o",
+                "result",
+                "main.cpp"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            },
-            "options": {
-                "cwd": "${fileDirname}"
             }
         }
     ]
