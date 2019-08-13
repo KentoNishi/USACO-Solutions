@@ -7,6 +7,8 @@ Extra files such as ``solution.[format]`` (the official solution) may be include
 
 ## Other Information
 * Directories named ``[name]-v2`` contain re-writes of the original solution.
+* Many different versions of the same problem may exist.
+* Each season's directory may contain problems from previous contests.
 * The programs can be run with any C++ compiler, or with the following command:
   ```
   g++ main.cpp -g -o result;./result;

@@ -8,7 +8,7 @@
             },
             "cwd":"${fileDirname}"
         }
-    },
+    }/*,
     "tasks": [
         {
             "label": "Build on WSL",
@@ -25,5 +25,5 @@
                 "isDefault": true
             }
         }
-    ]
+    ]*/
 }
