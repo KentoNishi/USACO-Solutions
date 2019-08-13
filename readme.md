@@ -1,5 +1,5 @@
 # USACO Solutions
-USACO solutions (problems from [http://www.usaco.org](http://www.usaco.org)).
+Solutions to algorithmic problems from [http://www.usaco.org](http://www.usaco.org).
 
 ## About
 Solutions are written in C++, and the file is named ``main.cpp``. ``[name].in`` and ``[name].out`` contains the given example in the specific problem.
