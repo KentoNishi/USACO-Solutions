@@ -23,26 +23,26 @@ using namespace std;
 int main() {
     ofstream fout ("convention.out");
     ifstream fin ("convention.in");
-    long long N,M,C;
+    int N,M,C;
     /*
         N: # of cows arriving
         M: # of buses
         C: # of seats on each bus
     */
     fin >> N >> M >> C;
-    vector<long long> cows=vector<long long>(N);
-    for(long long i=0;i<N;i++){
+    vector<int> cows=vector<int>(N);
+    for(int i=0;i<N;i++){
         fin >> cows[i];
     }
     sort(cows.begin(),cows.end());
-    long long shortestMaximumWait=cows.back()-cows.front();
-    long long lowerBound=0;
-    long long higherBound=shortestMaximumWait;
+    int shortestMaximumWait=cows.back()-cows.front();
+    int lowerBound=0;
+    int higherBound=shortestMaximumWait;
     while(higherBound-lowerBound>1){
-        long long trialTime=(lowerBound+higherBound)/2;
-        long long currentCow=0;
-        for(long long i=0;i<M;i++){ // for each bus
-            long long firstCow=currentCow;
+        int trialTime=(lowerBound+higherBound)/2;
+        int currentCow=0;
+        for(int i=0;i<M;i++){ // for each bus
+            int firstCow=currentCow;
             if(currentCow<N-1){
                 currentCow++;
             }
