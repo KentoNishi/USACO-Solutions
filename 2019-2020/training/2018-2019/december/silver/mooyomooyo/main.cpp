@@ -97,22 +97,32 @@ int main() {
         }
         for(int y=0;y<N;y++){
             for(int x=0;x<10;x++){
+                // for each pixel
+                /*
+                    if the pixel has not been visited AND
+                    the pixel is not empty
+                */
                 if(!board[y][x].visited && board[y][x].value!=0){
+                    // do a flood fill to find the pixel's region
                     vector<Pixel> searchResults=floodFillSearch(board[y][x]);
-//                    cout << x << "," << y << "=" << searchResults.size() << endl;
+                    // if the region is large enough
                     if(searchResults.size()>=K){
-//                        cout << searchResults.size() << " is at least " << K << endl;
+                        // make the region disappear
                         for(auto &pixel:searchResults){
                             board[pixel.y][pixel.x].value=0;
                         }
+                        // loop one more time to check for completion.
                         done=false;
                     }
                 }
             }
         }
+        // apply gravity
         for(int x=0;x<10;x++){
+            // repeat for every row
             int openSpace=N-1;
             for(int y=N-1;y>=0;y--){
+                // replace empty pixels with the nearest pixel above
                 if(board[y][x].value!=0){
                     board[openSpace][x].value=board[y][x].value;
                     if(openSpace--!=y){
@@ -122,6 +132,7 @@ int main() {
             }
         }
     }
+    // output answer
     for(int y=0;y<N;y++){
         string line="";
         for(int x=0;x<10;x++){
