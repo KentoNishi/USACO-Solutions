@@ -7,18 +7,17 @@
 
 */
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <set>
 #include <algorithm>
 #include <array>
+#include <fstream>
+#include <iostream>
+#include <set>
+#include <string>
+#include <vector>
 using namespace std;
 
-
 int main() {
-    ofstream fout ("template.out");
-    ifstream fin ("template.in");
+    ofstream fout("template.out");
+    ifstream fin("template.in");
     return 0;
 }
