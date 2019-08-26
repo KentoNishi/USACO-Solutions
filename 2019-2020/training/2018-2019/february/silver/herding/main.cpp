@@ -57,16 +57,15 @@ int main() {
             minimum=2;
         }
     }else{
-        for(int i=0;i<N;i++){
+        for(int i=0;i<N && cows[i]<=cows[N-1]-N+1;i++){
             int k=i+1;
-            while(k<N && cows[k]-cows[i] < N){
-    //            cout << k << " " << cows[k]-cows[i] << endl;
+            while(k<N && cows[k]-cows[i]<N){
                 k++;
             }
             k--;
-            if(k<N && cows[N-1]-cows[i]+1>=N){
-    //            cout << i << " " << k << " " << k-i+1 << endl;
-                minimum=min(k-i+1,minimum);
+//            cout << i << " " << k << " " << cows[k]-cows[i]-(k-i) << endl;
+            if(k-i>1){
+                minimum=min(cows[k]-cows[i]-(k-i),minimum);
             }
         }
     }
