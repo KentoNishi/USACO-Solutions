@@ -50,23 +50,17 @@ int main() {
     maximum=max(maximum,cows[N-2]-cows[0]-N+2);
     maximum=max(maximum,cows[N-1]-cows[1]-N+2);
     int minimum=maximum;
-    if(N==3){
-        if(cows[2]-cows[1]==2 || cows[1]-cows[0]==2){
-            minimum=1;
-        }else{
-            minimum=2;
+    for(int cowIndex=0;cowIndex<N;cowIndex++){
+        int maximumRightBound=cowIndex+N-1;
+        int rightBound=cowIndex+1;
+        while(rightBound < N && cows[rightBound] - cows[cowIndex] + 1 < N){
+            rightBound++;
         }
-    }else{
-        for(int i=0;i<N && cows[i]<=cows[N-1]-N+1;i++){
-            int k=i+1;
-            while(k<N && cows[k]-cows[i]<N){
-                k++;
-            }
-            k--;
-//            cout << i << " " << k << " " << cows[k]-cows[i]-(k-i) << endl;
-            if(k-i>1){
-                minimum=min(cows[k]-cows[i]-(k-i),minimum);
-            }
+        if(cows[rightBound] - cows[cowIndex] + 1 >= N){
+            int trialMoves = cows[rightBound] - cows[cowIndex] + 1;
+            trialMoves-= rightBound - cowIndex + 1;
+//            cout << cowIndex << " " << rightBound << " " << trialMoves << endl;
+            minimum=min(minimum, trialMoves);
         }
     }
     fout << minimum << endl << maximum << endl;
