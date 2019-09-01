@@ -14,3 +14,4 @@ Extra files such as ``solution.[format]`` (the official solution) may be include
   g++ main.cpp -g -o result;./result;
   ```
 * In Visual Studio Code, the debug tasks are configured using GDB on WSL.
+* ``setup.bat`` in the ``utils`` folder generates a boilerplate directory in ``[problem name]``.
