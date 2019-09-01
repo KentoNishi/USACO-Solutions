@@ -15,7 +15,8 @@
                     First and last k-1 gaps
         Minimum:
             Find the least amount of empty spots in a continuous 
-            strip of N elements using a prefix sum.
+            strip of N elements. If there are N-1 continuous
+            cows, the answer is 2.
 
 */
 
@@ -50,17 +51,16 @@ int main() {
     maximum=max(maximum,cows[N-2]-cows[0]-N+2);
     maximum=max(maximum,cows[N-1]-cows[1]-N+2);
     int minimum=maximum;
-    for(int cowIndex=0;cowIndex<N;cowIndex++){
-        int maximumRightBound=cowIndex+N-1;
-        int rightBound=cowIndex+1;
-        while(rightBound < N && cows[rightBound] - cows[cowIndex] + 1 < N){
-            rightBound++;
-        }
-        if(cows[rightBound] - cows[cowIndex] + 1 >= N){
-            int trialMoves = cows[rightBound] - cows[cowIndex] + 1;
-            trialMoves-= rightBound - cowIndex + 1;
-//            cout << cowIndex << " " << rightBound << " " << trialMoves << endl;
-            minimum=min(minimum, trialMoves);
+    if( cows[N-2]-cows[0]==N-2 && cows[N-1]-cows[N-2]>2 ||
+    cows[N-1]-cows[1]==N-2 && cows[1]-cows[0]>2 ){
+        minimum=2;    
+    }else{
+        int rightBound=0;
+        for(int cowIndex=0;cowIndex<N;cowIndex++){
+            while(rightBound < N-1 && cows[rightBound+1] - cows[cowIndex] <= N-1){
+                rightBound++;
+            }
+            minimum=min(minimum,N-(rightBound-cowIndex+1));
         }
     }
     fout << minimum << endl << maximum << endl;
