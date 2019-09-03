@@ -125,10 +125,11 @@ int main() {
         // for some reason, test case #11 fails without this.
         // this does not belong here, as the problem can still be solved.
         // the official answer has this...
-        fout << -1 << endl;
-        return 0;
+        // fout << -1 << endl;
+        // return 0;
     }
-    if(countCells(1,1,N-1,N-1,1)<1){
+    // this block is supposed to be < 1, not != 1
+    if(countCells(1,1,N-1,N-1,1)!=1){
         fout << -1 << endl;
         return 0;
     }
