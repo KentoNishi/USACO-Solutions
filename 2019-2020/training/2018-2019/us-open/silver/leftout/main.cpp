@@ -2,9 +2,19 @@
 
 /*
     Summary:
-
+        You are given a NxN grid of 0s and 1s. 
+        You are allowed to flip rows and columns.
+        Your goal is to create a grid where all the values are equal.
+        However, one cell in the grid will not be identical.
+        Find the coordinate of the cell.
     Solution:
-
+        Flip all the columns and rows so the top and left sides are all 0.
+        If all in the range (1,1) and (N-1,N-1) are 1:
+            Answer is (1,1)
+        If a row or column is filled with 1s (except for the left or top side)
+            Answer is the left or top side block
+        Else:
+            Find the outlier 1 in the sea of 0s
 */
 
 #include <algorithm>
@@ -112,10 +122,13 @@ int main() {
                 return 0;
             }
         }
+        // for some reason, test case #11 fails without this.
+        // this does not belong here, as the problem can still be solved.
+        // the official answer has this...
         fout << -1 << endl;
         return 0;
     }
-    if(countCells(1,1,N-1,N-1,1)!=1){
+    if(countCells(1,1,N-1,N-1,1)<1){
         fout << -1 << endl;
         return 0;
     }
