@@ -37,6 +37,7 @@ Point operator-(Point p1, Point p2)
 }
 bool isect(Segment &s1, Segment &s2)
 {
+    cout << s1.index << " " << s2.index << endl;
     Point &p1 = s1.p, &q1 = s1.q, &p2 = s2.p, &q2 = s2.q;
     return ((q2 - p1) * (q1 - p1)) * ((q1 - p1) * (p2 - p1)) >= 0 && ((q1 - p2) * (q2 - p2)) * ((q2 - p2) * (p1 - p2)) >= 0;
 }
@@ -48,7 +49,9 @@ double eval(Segment s)
         return s.p.y;
     return s.p.y + (s.q.y - s.p.y) * (x - s.p.x) / (s.q.x - s.p.x);
 }
-bool operator<(Segment s1, Segment s2) { return s1.index != s2.index && eval(s1) < eval(s2); }
+bool operator<(Segment s1, Segment s2) { 
+    return s1.index != s2.index && eval(s1) < eval(s2); 
+}
 bool operator==(Segment s1, Segment s2) { return s1.index == s2.index; }
 
 int main(void)
@@ -116,6 +119,9 @@ int main(void)
             active.insert(S[ans1]);
         }
     }
+
+    cout << ans1 << endl;
+    cout << ans2 << endl;
 
     if (ans1 > ans2)
         swap(ans1, ans2);
