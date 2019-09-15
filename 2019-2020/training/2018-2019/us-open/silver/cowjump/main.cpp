@@ -16,168 +16,151 @@
 #include <vector>
 using namespace std;
 
-double currentTime = 0;
+double currentTime;
 
+// definition of point
 struct Point {
     long long x, y;
-    Point(long long a, long long b) {
-        x = a;
-        y = b;
-    }
-    Point() {
-    }
+    int segmentIndex;
 };
 
+// definition of hurdle
 struct Hurdle {
-    Point p1;
-    Point p2;
+    Point p1, p2;
     int index;
-    int collisions = 0;
-    Hurdle(Point a, Point b, int i) {
-        p1 = a;
-        p2 = b;
-        index = i;
-    }
-    Hurdle() {
+};
+
+// vector of hurdles
+vector<Hurdle> hurdles;
+
+// comparator for comparing line positions
+struct sortPoints {
+    bool operator()(Point p1, Point p2) const {
+        if (p1.x == p2.x) {
+            return p1.y < p2.y;
+        }
+        return p1.x < p2.x;
     }
 };
+// start intersection testing code
+
+int sign(long long x) {
+    if (x == 0) {
+        return 0;
+    } else {
+        return x < 0 ? -1 : +1;
+    }
+}
+
+int operator*(Point p1, Point p2) {
+    return sign(p1.x * p2.y - p1.y * p2.x);
+}
+
+Point operator-(Point p1, Point p2) {
+    Point p = {p1.x - p2.x, p1.y - p2.y};
+    return p;
+}
 
 bool isIntersecting(Hurdle h1, Hurdle h2) {
-    cout << h1.index << " " << h2.index << endl;
-    Point p1 = h1.p1;
-    Point p2 = h1.p2;
-    Point q1 = h2.p1;
-    Point q2 = h2.p2;
-    return (((q1.x - p1.x) * (p2.y - p1.y) - (q1.y - p1.y) * (p2.x - p1.x)) * ((q2.x - p1.x) * (p2.y - p1.y) - (q2.y - p1.y) * (p2.x - p1.x)) < 0) &&
-           (((p1.x - q1.x) * (q2.y - q1.y) - (p1.y - q1.y) * (q2.x - q1.x)) * ((p2.x - q1.x) * (q2.y - q1.y) - (p2.y - q1.y) * (q2.x - q1.x)) < 0);
+    Point &p1 = h1.p1, &q1 = h1.p2, &p2 = h2.p1, &q2 = h2.p2;
+    return ((q2 - p1) * (q1 - p1)) * ((q1 - p1) * (p2 - p1)) >= 0 && ((q1 - p2) * (q2 - p2)) * ((q2 - p2) * (p1 - p2)) >= 0;
 }
 
-struct Event {
-    int time;
-    int index;
-    Event(int t, int i) {
-        time = t;
-        index = i;
-    }
-};
+// end intersection testing code
 
-struct SortEvents {
-    bool operator()(Event a, Event b) const {
-        return a.time < b.time;
-    }
-};
-
-double linePosition(Hurdle hurdle) {
-    if (hurdle.p1.x == hurdle.p2.x) {
+// get the value of the hurdle evaluated at currentTime
+double eval(Hurdle hurdle) {
+    if (hurdle.p1.x == hurdle.p2.x)
         return hurdle.p1.y;
-    }
-    // y intercept + (change in y / change in x)*distance of x
-    return hurdle.p1.y + 
-        (double)(currentTime - hurdle.p1.x) *
-        (double)(hurdle.p2.y - hurdle.p1.y) /
-        (double)(hurdle.p2.x - hurdle.p1.y);
+    return hurdle.p1.y + (hurdle.p2.y - hurdle.p1.y) * (currentTime - hurdle.p1.x) / (hurdle.p2.x - hurdle.p1.x);
 }
 
-vector<Hurdle> hurdles;
+// comparator for sorting hurdles
 struct sortActiveHurdles {
-    bool operator()(int aIndex, int bIndex) const {
-        Hurdle a=hurdles[aIndex];
-        Hurdle b=hurdles[bIndex];
-        if (a.index == b.index) {
+    bool operator()(int a, int b) const {
+        Hurdle hurdleA = hurdles[a];
+        Hurdle hurdleB = hurdles[b];
+        if (hurdleA.index == hurdleB.index) {
             return false;
         }
-        return linePosition(a) < linePosition(b);
+        return eval(hurdleA) < eval(hurdleB);
     }
 };
 
-vector<Event> timeline;
-
 int main() {
-    ofstream fout("cowjump.out");
     ifstream fin("cowjump.in");
+    ofstream fout("cowjump.out");
     int N;
     fin >> N;
-    // create a list of all hurdles
+    vector<Point> events;
     for (int i = 0; i < N; i++) {
-        long long a, b, c, d;
-        fin >> a >> b >> c >> d;
-        hurdles.push_back(Hurdle(Point(a, b), Point(c, d), i));
+        Hurdle hurdle;
+        fin >> hurdle.p1.x >> hurdle.p1.y >> hurdle.p2.x >> hurdle.p2.y;
+        hurdle.index = hurdle.p1.segmentIndex = hurdle.p2.segmentIndex = i;
+        hurdles.push_back(hurdle);
+        events.push_back(hurdle.p1);
+        events.push_back(hurdle.p2);
     }
-    // add the events (left point, right point) to a queue
-    for (auto &hurdle : hurdles) {
-        timeline.push_back(Event(min(hurdle.p1.x, hurdle.p2.x), hurdle.index));
-        timeline.push_back(Event(max(hurdle.p1.x, hurdle.p2.x), hurdle.index));
-    }
-    // sort the queues
-    sort(timeline.begin(), timeline.end(), SortEvents());
+    sort(events.begin(), events.end(), sortPoints());
 
-    set<int, sortActiveHurdles> activeHurdles;
+    // a set of indices of the active hurdles
+    set<int, sortActiveHurdles> active;
     int ans1;
     int ans2;
-
-    for (auto event : timeline) {
-        currentTime = event.time;
-        pair<set<int>::iterator, bool> hurdleStatus = activeHurdles.insert(event.index);
-        set<int>::iterator currentHurdle = hurdleStatus.first;
-        if (hurdleStatus.second == false) {
-            // element already exists in the set
-            if (currentHurdle != activeHurdles.begin() && currentHurdle != activeHurdles.end()) {
-                // if the line is not at the top or bottom
-                // check intersections of the line above and below
-                // as if the line doesn't exist
-                set<int>::iterator hurdleAbove = currentHurdle;
-                hurdleAbove++;
-                set<int>::iterator hurdleBelow = currentHurdle;
+    for(auto event: events){
+        currentTime=event.x;
+        pair<set<int>::iterator,bool> hurdleStatus=active.insert(event.segmentIndex);
+        auto currentHurdle = hurdleStatus.first;
+        bool alreadyExisting = !hurdleStatus.second;
+        if(alreadyExisting){
+            auto hurdleAbove=currentHurdle;
+            auto hurdleBelow=currentHurdle;
+            hurdleAbove++;
+            if(hurdleBelow != active.begin() && hurdleAbove != active.end()){
                 hurdleBelow--;
-                if (isIntersecting(hurdles[*hurdleAbove], hurdles[*hurdleBelow])) {
-                    ans1 = *hurdleAbove;
-                    ans2 = *hurdleBelow;
+                if(isIntersecting(hurdles[*hurdleAbove],hurdles[*hurdleBelow])){
+                    ans1=*hurdleBelow;
+                    ans2=*hurdleAbove;
                     break;
                 }
             }
-            activeHurdles.erase(currentHurdle);
-        } else {
-            // element was just inserted
-            // check the instersections of the new line
-            // with the line above and below
-            set<int>::iterator hurdleAbove = currentHurdle;
-            set<int>::iterator hurdleBelow = currentHurdle;
-            if (currentHurdle != activeHurdles.end() && next(currentHurdle) != activeHurdles.end()) {
+            active.erase(currentHurdle);
+        }else{
+            if(currentHurdle!=active.end()&&next(currentHurdle)!=active.end()){
+                auto hurdleAbove=currentHurdle;
                 hurdleAbove++;
-                if (isIntersecting(hurdles[*hurdleAbove], hurdles[*currentHurdle])) {
-                    ans1 = hurdles[*currentHurdle].index;
-                    ans2 = hurdles[*hurdleAbove].index;
+                if(isIntersecting(hurdles[*currentHurdle],hurdles[*hurdleAbove])){
+                    ans1=*currentHurdle;
+                    ans2=*hurdleAbove;
                     break;
                 }
             }
-            if (currentHurdle != activeHurdles.begin()) {
+            if(currentHurdle!=active.begin()){
+                auto hurdleBelow=currentHurdle;
                 hurdleBelow--;
-                if (isIntersecting(hurdles[*hurdleBelow], hurdles[*currentHurdle])) {
-                    ans1 = hurdles[*currentHurdle].index;
-                    ans2 = hurdles[*hurdleBelow].index;
+                if(isIntersecting(hurdles[*currentHurdle],hurdles[*hurdleBelow])){
+                    ans1=*currentHurdle;
+                    ans2=*hurdleBelow;
                     break;
                 }
             }
         }
     }
-    if(ans1>ans2){
-        swap(ans1,ans2);
-        // ans2 always has the bigger index
+    cout << ans1 << endl;
+    cout << ans2 << endl;
+    if(ans1 > ans2){
+        swap(ans1, ans2);
     }
     int ans2Intersections=0;
-    for(auto hurdle: hurdles){
-        if(hurdle.index != ans2 && isIntersecting(hurdle, hurdles[ans2])){
+    for(auto hurdle:hurdles){
+        if(hurdle.index != ans2 && isIntersecting(hurdles[ans2],hurdle)){
             ans2Intersections++;
         }
     }
-    if(ans2Intersections > 1){
-        // the larger index line has more than one intersection
+    if(ans2Intersections>1){
         fout << ans2 + 1 << endl;
         return 0;
     }
-    // if ans2 has less than or equal to one intersections,
-    // the smaller index line must be the answer.
     fout << ans1 + 1 << endl;
-
     return 0;
 }
