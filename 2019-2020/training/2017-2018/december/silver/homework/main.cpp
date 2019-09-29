@@ -31,7 +31,7 @@ int main() {
     for(int i=0;i<N-2;i++){
         //cout << (sums[i]-minimums[i])<<"/"<<(N-2-i)<<"="<<float(sums[i]-minimums[i])/float(N-2-i)<< endl;
         //cout << sums[i] << " " << minimums[i] << endl;
-        int localAns=float(sums[i]-minimums[i])/float(N-2-i);
+        float localAns=float(sums[i]-minimums[i])/float(N-2-i);
         if(localAns>maximum){
             maximums={i+1};
             maximum=localAns;
@@ -40,7 +40,7 @@ int main() {
         }
     }
     for(int i=0;i<maximums.size();i++){
-        fout << maximums[i] << (i==maximums.size()-1?"":" ");
+        fout << maximums[i] << (i==maximums.size()-1?"":"\n");
     }
     fout << endl;
     return 0;
