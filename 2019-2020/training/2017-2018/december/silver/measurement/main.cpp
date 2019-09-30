@@ -45,40 +45,55 @@ int main() {
     }
     vector<int> cows(cowNames.size(),0);
     sort(events.begin(),events.end(),sortEvents());
+    int ans=0;
+    int highest=0;
     vector<int> topCows;
-    int maximum=0;
-    int count=0;
-    for(int i=0;i<events.size();i++){
-        cows[events[i].cow]+=events[i].change;
-        auto searchPointer=find(topCows.begin(),topCows.end(),events[i].cow);
-        if(searchPointer==topCows.end()){
-            // not a top cow currently
-            if(cows[events[i].cow]>=maximum){
-                count++;
-                maximum=cows[events[i].cow];
-                topCows.push_back(events[i].cow);
+    for(auto &event:events){
+        cows[event.cow]+=event.change;
+        // make the change
+        if(cows[event.cow]>highest){
+            // now the highest
+            if(topCows.size()!=1 || topCows[0] != event.cow){
+                // if the cow was not already the only top alone
+                ans++;
             }
+            highest=cows[event.cow];
+            topCows={event.cow};
+        }else if(cows[event.cow]==highest){
+            ans++;
         }else{
-            count++;
-            if(cows[events[i].cow]>maximum){
-                maximum=cows[events[i].cow];
-                topCows={events[i].cow};
-            }else{
-                topCows.erase(searchPointer);
+            // not the highest after change
+            auto found=find(topCows.begin(),topCows.end(),event.cow);
+            if(found!=topCows.end()){
+                // existed in top, but not after change
+                topCows.erase(found);
+                // remove from highest
                 if(topCows.size()==0){
-                    for(int k=1;k<cows.size();k++){
-                        if(cows[k]>cows[topCows[0]]){
-                            topCows={k};
-                        }else if(cows[k]==cows[topCows[0]]){
-                            topCows.push_back(k);
+                    // if 0 cows are at the top
+                    // find a new top cow
+                    int localHigh=0;
+                    for(int i=0;i<cows.size();i++){
+                        if(cows[i]>localHigh){
+                            localHigh=cows[i];
+                            topCows={i};
+                        }else if(cows[i]==localHigh){
+                            topCows.push_back(i);
                         }
                     }
-                    maximum=cows[topCows[0]];
+                    // found new top cows
+                    highest=localHigh;
+                    // set the maximum to the new max
+                    if(topCows.size()!=1 || topCows[0] != event.cow){
+                        // if it's not the same cow only
+                        ans++;
+                    }
+                }else{
+                    // more cows still at top
+                    ans++;
                 }
             }
         }
-        //cout << events[i].day << " " << events[i].cow << " " << events[i].change << endl;
     }
-    fout << count << endl;
+    fout << ans << endl;
     return 0;
 }
