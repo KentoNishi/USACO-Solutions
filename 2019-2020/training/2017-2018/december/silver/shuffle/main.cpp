@@ -4,6 +4,7 @@
 #include <array>
 #include <fstream>
 #include <iostream>
+#include <queue>
 #include <set>
 #include <string>
 #include <vector>
@@ -14,32 +15,30 @@ int main() {
     ifstream fin("shuffle.in");
     int N;
     fin >> N;
-    vector<int> shuffles=vector<int>(N);
-    vector<bool> forever=vector<bool>(N);
-    for(int i=0;i<N;i++){
+    vector<int> shuffles = vector<int>(N);
+    vector<int> cowCount(N, 0);
+    for (int i = 0; i < N; i++) {
         int shuffle;
         fin >> shuffle;
-        shuffles[i]=shuffle-1;
+        shuffles[i] = shuffle - 1;
+        cowCount[shuffles[i]]++;
     }
-    for(int i=0;i<N;i++){
-        if(forever[i]){
-            continue;
-        }
-        int current=i;
-        vector<bool> visited=vector<bool>(N);
-        while(!visited[current]){
-            visited[current]=true;
-            current=shuffles[current];
-        }
-        forever[current]=true;
-        current=shuffles[current];
-        while(!forever[current]){
-            forever[current]=true;
+    queue<int> emptyCells;
+    int ans = N;
+    for (int i = 0; i < N; i++) {
+        if (cowCount[i] == 0) {
+            emptyCells.push(i);
+            ans--;
         }
     }
-    int ans=0;
-    for(int i=0;i<N;i++){
-        ans+=forever[i];
+    while (emptyCells.size() > 0) {
+        int &current = emptyCells.front();
+        emptyCells.pop();
+        cowCount[shuffles[current]]--;
+        if (cowCount[shuffles[current]] == 0) {
+            ans--;
+            emptyCells.push(shuffles[current]);
+        }
     }
     fout << ans << endl;
     return 0;
