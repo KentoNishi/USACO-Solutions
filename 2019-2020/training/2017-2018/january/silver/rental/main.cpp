@@ -34,51 +34,59 @@ struct sortRenters {
     }
 };
 
+struct sortMilk {
+    bool operator()(int a, int b) const { 
+        return a>b;
+    }
+};
+
 int main() {
     ofstream fout("rental.out");
     ifstream fin("rental.in");
     int N,M,R;
     fin >> N >> M >> R;
     vector<int> milk=vector<int>(N);
-    priority_queue<Buyer,vector<Buyer>,sortBuyers> buyers;
-    priority_queue<int,vector<int>,sortRenters> renters;
+    vector<Buyer> buyers=vector<Buyer>(M);
+    vector<int> renters=vector<int>(R);
     for(int i=0;i<N;i++){
         fin >> milk[i];
     }
     for(int i=0;i<M;i++){
         Buyer buyer=Buyer();
         fin >> buyer.maxAmount >> buyer.cents;
-        buyers.emplace(buyer);
+        buyers[i]=buyer;
     }
     for(int i=0;i<R;i++){
         int a;
         fin >> a;
-        renters.emplace(a);
+        renters[i]=a;
     }
-    sort(milk.begin(),milk.end());
-    // smallest to largest
+    sort(milk.begin(),milk.end(),sortMilk());
+    sort(buyers.begin(),buyers.end(),sortBuyers());
+    sort(renters.begin(),renters.end(),sortRenters());
     long long profit=0;
-    for(auto &cowAmount:milk){
+    int buyerIndex=0;
+    int renterIndex=0;
+    for(auto &milkAmount:milk){
+        int profitIfRented=renterIndex<R?renters[renterIndex]:0;
         int profitIfMilked=0;
-        Buyer currentBuyer=buyers.top();
-        priority_queue<Buyer,vector<Buyer>,sortBuyers> localBuyers=buyers;
-        while(cowAmount>0 && currentBuyer.cents>0){
-            int amountMilked=min(cowAmount,currentBuyer.maxAmount);
-            cout << "Milked " << amountMilked << " because "<<cowAmount<<" and " <<currentBuyer.maxAmount<<endl;
-            profitIfMilked+=amountMilked*currentBuyer.cents;
-            currentBuyer.maxAmount-=amountMilked;
-            cowAmount-=amountMilked;
-            if(currentBuyer.maxAmount==0){
-                localBuyers.pop();
-                currentBuyer=localBuyers.top();
+        vector<Buyer> buyerClone=buyers;
+        int currentBuyer=buyerIndex;
+        while(milkAmount>0 && currentBuyer<M){
+            int amountMilked=min(milkAmount,buyerClone[currentBuyer].maxAmount);
+            profitIfMilked+=amountMilked*buyerClone[currentBuyer].cents;
+            buyerClone[currentBuyer].maxAmount-=amountMilked;
+            milkAmount-=amountMilked;
+            if(buyerClone[currentBuyer].maxAmount<=0){
+                currentBuyer++;
             }
         }
-        int profitIfRented=renters.top();
-        renters.pop();
-        if(profitIfMilked<profitIfRented){
+        if(profitIfRented>profitIfMilked){
             profit+=profitIfRented;
+            renterIndex++;
         }else{
             profit+=profitIfMilked;
+            buyerIndex=currentBuyer;
         }
     }
     fout << profit << endl;
