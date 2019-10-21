@@ -4,95 +4,97 @@
 #include <array>
 #include <fstream>
 #include <iostream>
+#include <queue>
 #include <set>
 #include <string>
 #include <vector>
-#include <queue>
 using namespace std;
 
-struct Buyer{
-    int maxAmount;
-    int cents;
-    Buyer(int m, int c){
-        maxAmount=m;
-        cents=c;
+struct Buyer {
+    long long maxAmount;
+    long long cents;
+    Buyer(long long m, long long c) {
+        maxAmount = m;
+        cents = c;
     }
-    Buyer(){
-
+    Buyer() {
     }
 };
 
 struct sortBuyers {
-    bool operator()(Buyer a, Buyer b) const { 
+    bool operator()(Buyer a, Buyer b) const {
         return a.cents > b.cents;
     }
 };
 
 struct sortRenters {
-    bool operator()(int a, int b) const { 
-        return a>b;
+    bool operator()(long long a, long long b) const {
+        return a > b;
     }
 };
 
 struct sortMilk {
-    bool operator()(int a, int b) const { 
-        return a<b;
+    bool operator()(long long a, long long b) const {
+        return a > b;
     }
 };
 
 int main() {
     ofstream fout("rental.out");
     ifstream fin("rental.in");
-    int N,M,R;
+    long long N, M, R;
     fin >> N >> M >> R;
-    vector<int> milk=vector<int>(N);
-    vector<Buyer> buyers=vector<Buyer>(M);
-    vector<int> renters=vector<int>(R);
-    for(int i=0;i<N;i++){
+    vector<long long> milk = vector<long long>(N);
+    vector<Buyer> buyers = vector<Buyer>(M);
+    vector<long long> renters = vector<long long>(R);
+    for (long long i = 0; i < N; i++) {
         fin >> milk[i];
     }
-    for(int i=0;i<M;i++){
-        Buyer buyer=Buyer();
+    for (long long i = 0; i < M; i++) {
+        Buyer buyer = Buyer();
         fin >> buyer.maxAmount >> buyer.cents;
-        buyers[i]=buyer;
+        buyers[i] = buyer;
     }
-    for(int i=0;i<R;i++){
-        int a;
+    for (long long i = 0; i < R; i++) {
+        long long a;
         fin >> a;
-        renters[i]=a;
+        renters[i] = a;
     }
-    sort(milk.begin(),milk.end(),sortMilk());
-    sort(buyers.begin(),buyers.end(),sortBuyers());
-    sort(renters.begin(),renters.end(),sortRenters());
-    // milk: least to most
+    sort(milk.begin(), milk.end(), sortMilk());
+    sort(buyers.begin(), buyers.end(), sortBuyers());
+    sort(renters.begin(), renters.end(), sortRenters());
+    // milk: most to least
     // buyers: highest to lowest
     // renters: highest to lowest
     // rent out lowest, milk highest
-    vector<long long> profits(N,0);
-    // profits if renting first X cows starting from 0
-    profits[1]=renters[0];
-    for(int i=2;i<N && i<R+1;i++){
-        profits[i]=profits[i-1]+renters[i-1];
+    vector<long long> profits(N + 1, 0);
+
+    profits[N - 1] = renters[0];
+    for (long long i = N - 2; i >= 0 && N - 1 - i < R; i--) {
+        profits[i] += profits[i + 1] + renters[N - 1 - i];
     }
-    // add the profits for milking the last N-X cows
-    int buyerIndex=0;
-    int profitFromMilking=0;
-    for(int i=N-1;i>=0;i--){
-        profits[i]+=profitFromMilking;
-        while(buyerIndex<M && milk[i]>0){
-            int amountMilked=min(milk[i],buyers[buyerIndex].maxAmount);
-            milk[i]-=amountMilked;
-            buyers[buyerIndex].maxAmount-=amountMilked;
-            profits[i]+=buyers[buyerIndex].cents*amountMilked;
-            profitFromMilking+=buyers[buyerIndex].cents*amountMilked;
-            if(buyers[buyerIndex].maxAmount==0){
+    // done computing the profits of renting cows
+    // last item of profit is 0 because 0 cows were rented
+
+    long long profitIfMilked = 0;
+    long long buyerIndex = 0;
+    for (long long i = 0; i < N; i++) {
+        while (buyerIndex < M && buyers[buyerIndex].maxAmount > 0 && milk[i] > 0) {
+            // if there is still milk left
+            long long toMilk = min(buyers[buyerIndex].maxAmount, milk[i]);
+            buyers[buyerIndex].maxAmount -= toMilk;
+            milk[i] -= toMilk;
+            profitIfMilked += toMilk * buyers[buyerIndex].cents;
+            if (buyers[buyerIndex].maxAmount == 0) {
                 buyerIndex++;
             }
         }
+        profits[i + 1] += profitIfMilked;
     }
-    long long maximum=0;
-    for(int i=0;i<profits.size();i++){
-        maximum=max(profits[i],maximum);
+    long long maximum = 0;
+    for (long long i = 0; i < N + 1; i++) {
+        maximum = max(profits[i], maximum);
+        //        cout << profits[i] << endl;
     }
     fout << maximum << endl;
     return 0;
