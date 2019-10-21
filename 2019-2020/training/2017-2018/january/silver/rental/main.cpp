@@ -36,7 +36,7 @@ struct sortRenters {
 
 struct sortMilk {
     bool operator()(int a, int b) const { 
-        return a>b;
+        return a<b;
     }
 };
 
@@ -64,31 +64,36 @@ int main() {
     sort(milk.begin(),milk.end(),sortMilk());
     sort(buyers.begin(),buyers.end(),sortBuyers());
     sort(renters.begin(),renters.end(),sortRenters());
-    long long profit=0;
+    // milk: least to most
+    // buyers: highest to lowest
+    // renters: highest to lowest
+    // rent out lowest, milk highest
+    vector<long long> profits(N,0);
+    // profits if renting first X cows starting from 0
+    profits[1]=renters[0];
+    for(int i=2;i<N && i<R+1;i++){
+        profits[i]=profits[i-1]+renters[i-1];
+    }
+    // add the profits for milking the last N-X cows
     int buyerIndex=0;
-    int renterIndex=0;
-    for(auto &milkAmount:milk){
-        int profitIfRented=renterIndex<R?renters[renterIndex]:0;
-        int profitIfMilked=0;
-        vector<Buyer> buyerClone=buyers;
-        int currentBuyer=buyerIndex;
-        while(milkAmount>0 && currentBuyer<M){
-            int amountMilked=min(milkAmount,buyerClone[currentBuyer].maxAmount);
-            profitIfMilked+=amountMilked*buyerClone[currentBuyer].cents;
-            buyerClone[currentBuyer].maxAmount-=amountMilked;
-            milkAmount-=amountMilked;
-            if(buyerClone[currentBuyer].maxAmount<=0){
-                currentBuyer++;
+    int profitFromMilking=0;
+    for(int i=N-1;i>=0;i--){
+        profits[i]+=profitFromMilking;
+        while(buyerIndex<M && milk[i]>0){
+            int amountMilked=min(milk[i],buyers[buyerIndex].maxAmount);
+            milk[i]-=amountMilked;
+            buyers[buyerIndex].maxAmount-=amountMilked;
+            profits[i]+=buyers[buyerIndex].cents*amountMilked;
+            profitFromMilking+=buyers[buyerIndex].cents*amountMilked;
+            if(buyers[buyerIndex].maxAmount==0){
+                buyerIndex++;
             }
         }
-        if(profitIfRented>profitIfMilked){
-            profit+=profitIfRented;
-            renterIndex++;
-        }else{
-            profit+=profitIfMilked;
-            buyerIndex=currentBuyer;
-        }
     }
-    fout << profit << endl;
+    long long maximum=0;
+    for(int i=0;i<profits.size();i++){
+        maximum=max(profits[i],maximum);
+    }
+    fout << maximum << endl;
     return 0;
 }
