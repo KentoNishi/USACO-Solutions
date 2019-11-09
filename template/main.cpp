@@ -7,13 +7,7 @@
 
 */
 
-#include <algorithm>
-#include <array>
-#include <fstream>
-#include <iostream>
-#include <set>
-#include <string>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 
 int main() {
