@@ -1,4 +1,4 @@
-// reststops - Silver - February 2017-2018 - http://usaco.org/index.php?page=viewproblem2&cpid=811
+// snowboots - Silver - February 2017-2018 - http://usaco.org/index.php?page=viewproblem2&cpid=811
 
 /*
     Summary:
