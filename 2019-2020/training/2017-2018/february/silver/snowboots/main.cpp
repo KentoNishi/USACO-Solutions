@@ -13,10 +13,6 @@ using namespace std;
 struct Boot {
     int maxHeight;
     int maxLength;
-    Boot() {
-        maxHeight = 69;
-        maxLength = 69;
-    }
 };
 
 vector<Boot> boots;
@@ -39,7 +35,6 @@ void minBoots(int tile, int boot) {
         }
         return;
     }
-    cout << N << " " << tile << " " << boots[boot].maxLength << endl;
     for (int nextTile = tile + 1; nextTile < N && nextTile - tile <= boots[boot].maxLength; nextTile++) {
         if (boots[boot].maxHeight >= tiles[nextTile]) {
             minBoots(nextTile, boot);
