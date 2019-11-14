@@ -55,6 +55,28 @@ int main() {
             criticalPoints.push_back(make_pair(pairs[i].second, 2));
             criticalPoints.push_back(make_pair(pairs[i].first*2, -1));
         }
+        if(pairs[i].first<0 && pairs[i].second>0){
+            // on both sides of 0
+            criticalPoints.push_back(make_pair(2*pairs[i].first, -1));
+            criticalPoints.push_back(make_pair(pairs[i].first, 2));
+            criticalPoints.push_back(make_pair(0, -2));
+            criticalPoints.push_back(make_pair(pairs[i].second, 2));
+            criticalPoints.push_back(make_pair(2*pairs[i].second, -1));
+        }
     }
+    int currentDist=0;
+    for(int i=0;i<N;i++){
+        currentDist+=pairs[i].second-pairs[i].first;
+    }
+    int minDist=currentDist;
+    int previousLocation=0;
+    int slope=0;
+    for(int i=0;i<criticalPoints.size();i++){
+        currentDist+=(criticalPoints[i].first-previousLocation)*slope;
+        previousLocation=criticalPoints[i].first;
+        minDist=min(minDist,currentDist);
+        slope+=criticalPoints[i].second;
+    }
+    fout << minDist << endl;
     return 0;
 }
