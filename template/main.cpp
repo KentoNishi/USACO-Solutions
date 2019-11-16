@@ -1,11 +1,5 @@
-// template - Division - Month Season - url
-
-/*
-    Summary:
-
-    Solution:
-
-*/
+// template - Division - Month Season
+// url
 
 #include <bits/stdc++.h>
 using namespace std;
