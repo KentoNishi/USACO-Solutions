@@ -1,4 +1,4 @@
-// lemonade - Silver - US-Open 2017-2018
+// multimoo - Silver - US-Open 2017-2018
 // http://usaco.org/index.php?page=viewproblem2&cpid=836
 
 #include <bits/stdc++.h>
@@ -14,7 +14,7 @@ struct Region {
     int area = 0;
     int cow;
     set<int> adjacent;
-    bool visited = false;
+    map<pair<int, int>, int> searched;
 };
 
 int N;
@@ -56,18 +56,22 @@ int findAreas(vector<vector<Cell>> &cells, vector<Region> &regions, int x, int y
     return area;
 }
 
-int floodDouble(vector<Region> &regions, int cow1, int cow2, int id) {
+int floodDouble(vector<Region> &regions, int cow1, int cow2, int id, map<int, bool> &visited) {
     if (regions[id].cow != cow1 && regions[id].cow != cow2) {
         return 0;
     }
-    if (regions[id].visited) {
+    if (visited[id]) {
         return 0;
     }
-    regions[id].visited = true;
+    if (regions[id].searched[make_pair(cow1, cow2)] > 0) {
+        return regions[id].searched[make_pair(cow1, cow2)];
+    }
+    visited[id] = true;
     int area = regions[id].area;
     for (auto &adjacent : regions[id].adjacent) {
-        area += floodDouble(regions, cow1, cow2, adjacent);
+        area += floodDouble(regions, cow1, cow2, adjacent, visited);
     }
+    regions[id].searched[make_pair(cow1, cow2)] = area;
     return area;
 }
 
@@ -107,11 +111,9 @@ int main() {
     fout << maxSingleArea << endl;
     int maxDoubleArea = 0;
     for (int reg1 = 0; reg1 < regionCount; reg1++) {
-        for(auto &reg2:regions[reg1].adjacent){
-            maxDoubleArea = max(maxDoubleArea, floodDouble(regions, regions[reg1].cow, regions[reg2].cow, reg1));
-            for(auto &region:regions){
-                region.visited=false;
-            }
+        map<int, bool> visited;
+        for (auto &reg2 : regions[reg1].adjacent) {
+            maxDoubleArea = max(maxDoubleArea, floodDouble(regions, regions[reg1].cow, regions[reg2].cow, reg1, visited));
         }
     }
     fout << maxDoubleArea << endl;
