@@ -5,7 +5,7 @@
 using namespace std;
 
 int main() {
-    ofstream fout("template.out");
     ifstream fin("template.in");
+    ofstream fout("template.out");
     return 0;
 }
