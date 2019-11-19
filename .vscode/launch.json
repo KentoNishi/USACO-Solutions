@@ -14,7 +14,9 @@
             "pipeTransport": {
                 "debuggerPath": "cd $(wslpath '${fileDirname}') && g++ ${fileBasename} -o result -g -Wall && stdbuf -i0 -o0 -e0 gdb",
                 "pipeProgram": "${env:windir}\\system32\\bash.exe",
-                "pipeArgs": ["-c"],
+                "pipeArgs": [
+                    "-c"
+                ],
                 "pipeCwd": ""
             },
             "setupCommands": [
@@ -25,7 +27,8 @@
                 }
             ],
             "sourceFileMap": {
-                "\\mnt\\c": "C:\\"
+                "\\mnt\\c": "C:\\",
+                "\\usr": "C:\\Users\\kento\\AppData\\Local\\Packages\\TheDebianProject.DebianGNULinux_76v4gfsz19hv4\\LocalState\\rootfs\\usr",
             }
         }
     ]
