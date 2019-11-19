@@ -10,7 +10,7 @@
             "stopAtEntry": false,
             "cwd": ".",
             "environment": [],
-            "externalConsole": true,
+            "externalConsole": false,
             "pipeTransport": {
                 "debuggerPath": "cd $(wslpath '${fileDirname}') && g++ ${fileBasename} -o result -g -Wall && stdbuf -i0 -o0 -e0 gdb",
                 "pipeProgram": "${env:windir}\\system32\\bash.exe",
