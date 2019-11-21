@@ -1,5 +1,5 @@
 // haybales - Silver - December 2016-2017
-// http://usaco.org/index.php?page=viewproblem2&cpid=573
+// http://usaco.org/index.php?page=viewproblem2&cpid=666
 
 #include <bits/stdc++.h>
 using namespace std;
