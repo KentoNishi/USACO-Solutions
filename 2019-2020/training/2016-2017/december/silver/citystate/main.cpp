@@ -1,5 +1,5 @@
-// citystate - Division - Month Season
-// url
+// citystate - Silver - December 2016-2017
+// http://usaco.org/index.php?page=viewproblem2&cpid=667
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -13,17 +13,19 @@ int main() {
     // <city, state>
     for (int i = 0; i < N; i++) {
         fin >> locs[i].first >> locs[i].second;
-        locs[i].first = locs[i].first.substr(0,2);
+        locs[i].first = locs[i].first.substr(0, 2);
     }
-    map<pair<string, string>, pair<int,bool>> locMap;
+    map<pair<string, string>, int> locMap;
     for (auto &loc : locs) {
-        locMap[make_pair(loc.first, loc.second)].first++;
+        if (loc.first != loc.second) {
+            locMap[make_pair(loc.first, loc.second)]++;
+        }
     }
     int total = 0;
     for (auto &loc : locs) {
-        if(!locMap[make_pair(loc.second, loc.first)].second && !locMap[make_pair(loc.first, loc.second)].second){
-            total += locMap[make_pair(loc.second, loc.first)].first * locMap[make_pair(loc.first, loc.second)].first;
-            locMap[make_pair(loc.second, loc.first)].second = locMap[make_pair(loc.first, loc.second)].second=true;
+        if (locMap[make_pair(loc.second, loc.first)] > 0 && locMap[make_pair(loc.first, loc.second)] > 0) {
+            total += locMap[make_pair(loc.second, loc.first)] * locMap[make_pair(loc.first, loc.second)];
+            locMap[make_pair(loc.first, loc.second)] = 0;
         }
     }
     fout << total << endl;
