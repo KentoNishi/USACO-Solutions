@@ -12,6 +12,18 @@ struct Cow {
     bool visited = false;
 };
 
+int reach(vector<Cow> &points, int cow) {
+    if (points[cow].visited) {
+        return 0;
+    }
+    points[cow].visited = true;
+    int sum = 1;
+    for (auto &e : points[cow].e) {
+        sum += reach(points, e);
+    }
+    return sum;
+}
+
 int main() {
     ifstream fin("moocast.in");
     ofstream fout("moocast.out");
@@ -32,5 +44,20 @@ int main() {
             }
         }
     }
+    for (int i = 0; i < N; i++) {
+        cout << points[i].x << ", " << points[i].y << ": ";
+        for (auto &e : points[i].e) {
+            cout << e << " ";
+        }
+        cout << endl;
+    }
+    int ans = 0;
+    for (int i = 0; i < N; i++) {
+        ans = max(ans, reach(points, i));
+        for (int i = 0; i < N; i++) {
+            points[i].visited = false;
+        }
+    }
+    fout << ans << endl;
     return 0;
 }
