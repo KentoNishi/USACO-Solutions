@@ -4,45 +4,56 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+vector<bool> overlaps = vector<bool>(64);
+vector<vector<int>> seqs;
+int N, M;
+
+bool possible(int n1, int n2, int n3) {
+    bool ok = true;
+    for (int i = 0; i < N; i++) {
+        overlaps[seqs[i][n1] * 16 + seqs[i][n2] * 4 + seqs[i][n3]] = true;
+    }
+    for (int i = N; i < 2 * N; i++) {
+        if (overlaps[seqs[i][n1] * 16 + seqs[i][n2] * 4 + seqs[i][n3]]) {
+            ok = false;
+        }
+    }
+    for (int i = 0; i < N; i++) {
+        overlaps[seqs[i][n1] * 16 + seqs[i][n2] * 4 + seqs[i][n3]] = false;
+    }
+    return ok;
+}
+
+int toNum(char s) {
+    if (s == 'A') {
+        return 0;
+    }
+    if (s == 'T') {
+        return 1;
+    }
+    if (s == 'G') {
+        return 2;
+    }
+    return 3;
+}
+
 int main() {
     ifstream fin("cownomics.in");
     ofstream fout("cownomics.out");
-    int N, M;
     fin >> N >> M;
-    vector<vector<char>> seqs = vector<vector<char>>(N * 2, vector<char>(M));
+    seqs = vector<vector<int>>(N * 2, vector<int>(M));
     for (int i = 0; i < 2 * N; i++) {
         string s;
         fin >> s;
         for (int k = 0; k < s.size(); k++) {
-            seqs[i][k] = s[k];
+            seqs[i][k] = toNum(s[k]);
         }
-    }
-    vector<pair<map<char, int>, bool>> signs = vector<pair<map<char, int>, bool>>(M);
-    // <character status, comfirmed to be bad>
-    for (int k = 0; k < M; k++) {
-        if (signs[k].second) {
-            continue;
-        }
-        for (int i = 0; i < 2 * N; i++) {
-            int spotty = (i < N) ? 1 : 2;
-            char &c = seqs[i][k];
-            if (signs[k].first.find(c) != signs[k].first.end() && signs[k].first[c] != spotty) {
-                signs[k].second = true;
-                break;
-            } else {
-                signs[k].first[c] = spotty;
-            }
-        }
-    }
-    for (auto &p : signs) {
-        cout << "Location is " << (p.second ? "bad" : "good") << endl;
     }
     int ans = 0;
-    for (int j1 = 0; j1 < M; j1++) {
-        for (int j2 = j1 + 1; j2 < M; j2++) {
-            for (int j3 = j2 + 1; j3 < M; j3++) {
-                if (!(signs[j3].second && signs[j2].second && signs[j1].second)) {
-                    cout << j1 << " " << j2 << " " << j3 << " is good " << endl;
+    for (int n1 = 0; n1 < M; n1++) {
+        for (int n2 = n1 + 1; n2 < M; n2++) {
+            for (int n3 = n2 + 1; n3 < M; n3++) {
+                if (possible(n1, n2, n3)) {
                     ans++;
                 }
             }
