@@ -46,6 +46,7 @@
         "numeric": "cpp",
         "random": "cpp",
         "ratio": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "unordered_set": "cpp"
     }
 }
