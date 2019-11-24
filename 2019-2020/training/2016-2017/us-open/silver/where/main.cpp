@@ -10,22 +10,15 @@ struct Pixel {
     bool seen;
 };
 int N = 0;
-/*
+
 struct Region {
     int minX;
     int minY;
     int maxX;
     int maxY;
-    Region() {
-        minX = N;
-        minY = N;
-        maxX = 0;
-        maxY = 0;
-    }
-};*/
+};
 
 vector<vector<Pixel>> grid;
-//vector<Region> regions;
 
 void markRegions(int x, int y, int value, int region) {
     if (x < 0 || y < 0 || x >= N || y >= N) {
@@ -81,27 +74,54 @@ int main() {
     }
 
     int ans = 0;
-    for (int x1 = 0; x1 < N; x1++) {
-        for (int y1 = 0; y1 < N; y1++) {
+    vector<Region> selected;
+    for (int x1 = N - 1; x1 >= 0; x1--) {
+        for (int y1 = N - 1; y1 >= 0; y1--) {
             for (int x2 = 0; x2 <= x1; x2++) {
                 for (int y2 = 0; y2 <= y1; y2++) {
+                    cout << "Coord: " << x2 << " " << y2 << " " << x1 << " " << y1 << endl;
                     map<char, set<int>> counts;
                     // pixel, region ids
-                    for (int x3 = x2; x3 <= x1; x3++) {
-                        for (int y3 = x2; y3 <= y1; y3++) {
-                            counts[grid[x3][y3].value].insert(grid[x3][y3].region);
+                    bool exit = false;
+                    for (auto &reg : selected) {
+                        // mins: x2,y2
+                        // maxs: x1, y1
+                        if (x2 >= reg.minX && x1 <= reg.maxX && y2 >= reg.minY && y1 <= reg.maxY) {
+                            exit = true;
+                            break;
                         }
                     }
-                    if(counts.size()==2){
-                        auto p=counts.begin();
-                        int a=(*p).second.size();
-                        p++;
-                        int b=(*p).second.size();
-                        if(a>b){
-                            swap(a,b);
+                    if (exit) {
+                        continue;
+                    }
+                    for (int x3 = x2; x3 <= x1; x3++) {
+                        for (int y3 = y2; y3 <= y1; y3++) {
+                            counts[grid[x3][y3].value].insert(grid[x3][y3].region);
                         }
-                        if(a==1&&b>=2){
-                            cout << x1 << " " << y1 << " " << x2 << " " << y2 << endl;
+                    } /*
+                    if(x2==0 && y2==2 && x1==3 && y1==3){
+                        for(auto &m:counts){
+                            cout << m.first << ": " << m.second.size() << endl;
+                        }
+                    }*/
+                    if (counts.size() == 2) {
+                        auto p = counts.begin();
+                        int a = (*p).second.size();
+                        p++;
+                        int b = (*p).second.size();
+                        if (a > b) {
+                            swap(a, b);
+                        }
+                        if (a == 1 && b >= 2) { /*
+                            cout << "!!! Choosing " << x2 << " " << y2 << " " << x1 << " " << y1 << endl;
+                            for (auto &reg : selected) {
+                                cout << "already selected: " << reg.minX << " " << reg.minY << " " << reg.maxX << " " << reg.maxY << endl;
+                            }*/
+                            selected.push_back(Region());
+                            selected[selected.size() - 1].maxX = x1;
+                            selected[selected.size() - 1].maxY = y1;
+                            selected[selected.size() - 1].minX = x2;
+                            selected[selected.size() - 1].minY = y2;
                             ans++;
                         }
                     }
