@@ -1,5 +1,5 @@
 // where - Division - Month Season
-// url
+// http://usaco.org/index.php?page=viewproblem2&cpid=740
 
 #include <bits/stdc++.h>
 using namespace std;
