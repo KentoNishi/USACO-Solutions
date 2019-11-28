@@ -4,11 +4,35 @@
         "options": {
             "shell": {
                 "executable": "bash.exe",
-                "args": ["-c"]
+                "args": [
+                    "-c"
+                ]
             },
-            "cwd":"${fileDirname}"
+            "cwd": "${fileDirname}"
         }
-    }/*,
+    },
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "USACO Tests",
+            "windows": {
+                "command": "cmd.exe",
+                "options": {
+                    "cwd": "C:\\Users\\kento\\OneDrive\\Files\\Documents\\GitHub\\USACO-Grader"
+                },
+                "args": [
+                    "/c",
+                    "python",
+                    "grader.py",
+                    "\"${file}\""
+                ]
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        }
+    ] /*,
     "tasks": [
         {
             "label": "Build on WSL",

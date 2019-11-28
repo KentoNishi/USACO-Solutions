@@ -1,3 +1,4 @@
+// Test case path: [C:\Users\kento\OneDrive\Files\Downloads\where_silver_open17]
 // where - Silver - US-Open 2016-2017
 // http://usaco.org/index.php?page=viewproblem2&cpid=740
 

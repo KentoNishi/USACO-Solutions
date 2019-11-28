@@ -1,3 +1,4 @@
+// Test case path: [C:\Users\kento\OneDrive\Files\Downloads\countcross_silver_feb17]
 // countcross - Silver - February 2016-2017
 // http://usaco.org/index.php?page=viewproblem2&cpid=716
 
