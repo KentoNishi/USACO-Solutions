@@ -31,7 +31,7 @@ bool canGo(int x, int y, int end, vector<vector<bool>> &visited) {
             continue;
         }
         pair<int, int> p = {x + dx[i], y + dy[i]};
-        if (!grid[x + dx[i]][y + dy[i]].adjacent[p] && canGo(x + dx[i], y + dy[i], end, visited)) {
+        if (!grid[x][y].adjacent[p] && canGo(x + dx[i], y + dy[i], end, visited)) {
             return true;
         }
     }
@@ -49,6 +49,10 @@ int main() {
     for (int i = 0; i < R; i++) {
         int a, b, c, d;
         fin >> a >> b >> c >> d;
+        a--;
+        b--;
+        c--;
+        d--;
         pair<int, int> p1 = {a, b};
         pair<int, int> p2 = {c, d};
         grid[p1.first][p1.second].adjacent[p2] = true;
@@ -57,12 +61,14 @@ int main() {
     cows = vector<pair<int, int>>(K);
     for (int i = 0; i < K; i++) {
         fin >> cows[i].first >> cows[i].second;
+        cows[i].first--;
+        cows[i].second--;
     }
     int ans = 0;
     for (int i = 0; i < K; i++) {
         for (int j = i + 1; j < K; j++) {
             vector<vector<bool>> visited = vector<vector<bool>>(N, vector<bool>(N));
-            if (canGo(cows[i].first, cows[i].second, j, visited)) {
+            if (!canGo(cows[i].first, cows[i].second, j, visited)) {
                 ans++;
             }
         }
