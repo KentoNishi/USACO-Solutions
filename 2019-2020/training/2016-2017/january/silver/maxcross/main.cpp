@@ -1,4 +1,4 @@
-// maxcross - Silver - January 2016-2017
+// maxcross - Silver - February 2016-2017
 // http://usaco.org/index.php?page=viewproblem2&cpid=715
 
 #include <bits/stdc++.h>
