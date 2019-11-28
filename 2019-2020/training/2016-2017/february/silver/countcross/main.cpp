@@ -6,7 +6,8 @@
 using namespace std;
 
 struct Loc {
-    map<pair<int, int>, bool> adjacent;
+    vector<bool> adjacent;
+    bool cow = false;
     // pair<int,int>, true if not accessible without crossing
 };
 
@@ -14,29 +15,23 @@ int N, K, R;
 vector<vector<Loc>> grid;
 vector<pair<int, int>> cows;
 
-bool canGo(int x, int y, int end, vector<vector<bool>> &visited) {
+int cowsInRegion(int x, int y, vector<vector<bool>> &visited) {
     if (x >= N || y >= N || x < 0 || y < 0) {
-        return false;
+        return 0;
     }
     if (visited[x][y]) {
-        return false;
+        return 0;
     }
     visited[x][y] = true;
-    if (cows[end].first == x && cows[end].second == y) {
-        return true;
-    }
-    vector<int> dx = {-1, 0, 1, 0};
-    vector<int> dy = {0, -1, 0, 1};
+    vector<int> dx = {-1, 0, 0, 1};
+    vector<int> dy = {0, -1, 1, 0};
+    int sum = grid[x][y].cow ? 1 : 0;
     for (int i = 0; i < 4; i++) {
-        if (x + dx[i] >= N || y + dy[i] >= N || x + dx[i] < 0 || y + dy[i] < 0) {
-            continue;
-        }
-        pair<int, int> p = {x + dx[i], y + dy[i]};
-        if (!grid[x][y].adjacent[p] && canGo(x + dx[i], y + dy[i], end, visited)) {
-            return true;
+        if (!grid[x][y].adjacent[i]) {
+            sum += cowsInRegion(x + dx[i], y + dy[i], visited);
         }
     }
-    return false;
+    return sum;
 }
 
 int main() {
@@ -54,26 +49,38 @@ int main() {
         b--;
         c--;
         d--;
-        pair<int, int> p1 = {a, b};
-        pair<int, int> p2 = {c, d};
-        grid[p1.first][p1.second].adjacent[p2] = true;
-        grid[p2.first][p2.second].adjacent[p1] = true;
+        vector<int> dx = {-1, 0, 0, 1};
+        vector<int> dy = {0, -1, 1, 0};
+        if (a - c == 1) {
+            grid[a][b].adjacent[0] = true;
+            grid[c][d].adjacent[3] = true;
+        } else if (c - a == 1) {
+            grid[a][b].adjacent[3] = true;
+            grid[c][d].adjacent[0] = true;
+        }
+        if (b - d == 1) {
+            grid[a][b].adjacent[1] = true;
+            grid[c][d].adjacent[2] = true;
+        } else if (d - b == 1) {
+            grid[a][b].adjacent[2] = true;
+            grid[c][d].adjacent[1] = true;
+        }
     }
     cows = vector<pair<int, int>>(K);
     for (int i = 0; i < K; i++) {
         fin >> cows[i].first >> cows[i].second;
         cows[i].first--;
         cows[i].second--;
+        grid[cows[i].first][cows[i].second].cow = true;
     }
     int ans = 0;
-    for (int i = 0; i < K; i++) {
-        for (int j = i + 1; j < K; j++) {
-            vector<vector<bool>> visited = vector<vector<bool>>(N, vector<bool>(N));
-            if (!canGo(cows[i].first, cows[i].second, j, visited)) {
-                ans++;
-            }
+    vector<vector<bool>> visited = vector<vector<bool>>(N, vector<bool>(N));
+    for (int x = 0; x < N; x++) {
+        for (int y = 0; y < N; y++) {
+            int reg = cowsInRegion(x, y, visited);
+            ans += (K - reg) * reg;
         }
     }
-    fout << ans << endl;
+    fout << ans / 2 << endl;
     return 0;
 }
