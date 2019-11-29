@@ -1,6 +1,6 @@
 // Test case path: [path]
-// convention2 - Division - Month Season
-// url
+// convention2 - Silver - December 2018-2019
+// http://usaco.org/index.php?page=viewproblem2&cpid=859
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -55,7 +55,12 @@ int main() {
         }
         currentTime += stay;
         if (nextCow < N && queue.size() == 0) {
-            queue.push(make_pair(cows[nextCow].first, nextCow));
+            int nextCowArrival=cows[nextCow].second.first;
+            while(nextCow<N&&cows[nextCow].second.first==nextCowArrival){
+                queue.push(make_pair(cows[nextCow].first, nextCow));
+                nextCow++;
+            }
+            currentTime=nextCowArrival;
         }
     }
     fout << ans << endl;
