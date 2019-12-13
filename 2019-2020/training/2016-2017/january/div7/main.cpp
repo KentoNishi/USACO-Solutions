@@ -10,36 +10,24 @@ int main() {
     ofstream fout("div7.out");
     int N;
     fin >> N;
-    vector<int> original=vector<int>(7,0);
-    for(int i=0;i<N;i++){
-        int a;
-        fin >> a;
-        a--;
-        original[a]++;
+    vector<int> sumLeft = vector<int>(N + 1, 0);
+    for (int i = 0; i < N; i++) {
+        fin >> sumLeft[i + 1];
     }
-    long long biggestDivisibleCount=0;
-    long long biggestDivisible=0;
-    long long biggestCount=0;
-    long long biggest=0;
-    for(int firstChoice=0;firstChoice<7;firstChoice++){
-        vector<int> counts=original;
-        long long sum=firstChoice+1;
-        int nextNumber=7-(sum%7);
-        long long count=1;
-        while(nextNumber==0||counts[nextNumber-1]>=0){
-            if(nextNumber)
-            sum+=nextNumber;
-            counts[nextNumber-1]--;
-            nextNumber=7-(sum%7);
-            count++;
-        }
-        biggest=max(biggest,sum);
-        biggestCount=max(biggestCount,count);
-        if(sum%7==0){
-            biggestDivisible+=sum;
-            biggestDivisibleCount+=count;
+    for (int i = 1; i <= N; i++) {
+        sumLeft[i] += sumLeft[i - 1];
+        sumLeft[i] %= 7;
+    //    cout << sumLeft[i] << " ";
+    }
+    // cout << endl;
+    int ans = 0;
+    for (int i = 0; i < N; i++) {
+        for (int k = i + 1; k < N; k++) {
+            if (((sumLeft[k] - sumLeft[i]) % 7) == 0) {
+                ans = max(k - i, ans);
+            }
         }
     }
-    fout << max(biggestCount,biggestDivisibleCount) << endl;
+    fout << ans << endl;
     return 0;
 }
