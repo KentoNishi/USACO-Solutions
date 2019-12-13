@@ -1,5 +1,5 @@
 // Test case path: [path]
-// div7 - Silver - January 2015-2019
+// div7 - Silver - January 2015-2016
 // http://usaco.org/index.php?page=viewproblem2&cpid=595
 
 #include <bits/stdc++.h>
@@ -17,15 +17,20 @@ int main() {
     for (int i = 1; i <= N; i++) {
         sumLeft[i] += sumLeft[i - 1];
         sumLeft[i] %= 7;
-    //    cout << sumLeft[i] << " ";
+        //    cout << sumLeft[i] << " ";
     }
     // cout << endl;
     int ans = 0;
-    for (int i = 0; i < N; i++) {
-        for (int k = i + 1; k < N; k++) {
+    for (int i = 0; i < N - ans; i++) {
+        int newI = i;
+        for (int k = i + 1 + ans; k < N; k++) {
             if (((sumLeft[k] - sumLeft[i]) % 7) == 0) {
                 ans = max(k - i, ans);
+                newI = k + 1;
             }
+        }
+        if (newI > i) {
+            i = newI - 1;
         }
     }
     fout << ans << endl;

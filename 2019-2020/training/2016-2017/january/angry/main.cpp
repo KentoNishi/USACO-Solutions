@@ -1,5 +1,5 @@
 // Test case path: [path]
-// angry - Silver - January 2016-2017
+// angry - Silver - January 2015-2016
 // http://usaco.org/index.php?page=viewproblem2&cpid=594
 
 #include <bits/stdc++.h>
