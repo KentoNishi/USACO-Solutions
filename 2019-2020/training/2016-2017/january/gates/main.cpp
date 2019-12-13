@@ -6,70 +6,73 @@
 using namespace std;
 
 int N;
+map<pair<pair<int, int>, pair<int, int>>, bool> blocked;
 
-struct Node {
-    vector<bool> canGo;
-};
-
-vector<vector<int>> grid;
-vector<Node> graph;
-void floodFill(int x, int y, vector<vector<bool>> &visited, int id) {
+void floodFill(int x, int y, vector<vector<bool>> &visited) {
     if (x == 2 * N + 1 || y == 2 * N + 1 || x == -1 || y == -1) {
         return;
     }
     if (visited[x][y]) {
         return;
     }
-    if (grid[x][y] == 1) {
-        return;
-    }
     visited[x][y] = true;
-    grid[x][y] = id;
-    int dx[] = {-1, 0, 1, 0};
-    int dy[] = {0, 1, 0, -1};
+    int dx[] = {0, 0, -1, 1};
+    int dy[] = {-1, 1, 0, 0};
     for (int i = 0; i < 4; i++) {
-        floodFill(x + dx[i], y + dy[i], visited, id);
+        if (x + dx[i] == 2 * N + 1 || y + dy[i] == 2 * N + 1 || x + dx[i] == -1 || y + dy[i] == -1) {
+            continue;
+        }
+        if (!blocked[make_pair(make_pair(x, y), make_pair(x + dx[i], y + dy[i]))]) {
+            floodFill(x + dx[i], y + dy[i], visited);
+        }
     }
-    return;
 }
 
 int main() {
     ifstream fin("gates.in");
     ofstream fout("gates.out");
     fin >> N;
-    grid = vector<vector<int>>(2 * N + 1, vector<int>(2 * N + 1));
     int x = N;
     int y = N;
     string s;
     fin >> s;
-    grid[x][y] = 1;
     for (auto &c : s) {
         if (c == 'N') {
+            blocked[make_pair(make_pair(x, y), make_pair(x, y - 1))] = true;
+            blocked[make_pair(make_pair(x, y - 1), make_pair(x, y))] = true;
             y--;
         }
         if (c == 'S') {
+            blocked[make_pair(make_pair(x, y), make_pair(x, y + 1))] = true;
+            blocked[make_pair(make_pair(x, y + 1), make_pair(x, y))] = true;
             y++;
         }
         if (c == 'W') {
+            blocked[make_pair(make_pair(x, y), make_pair(x - 1, y))] = true;
+            blocked[make_pair(make_pair(x - 1, y), make_pair(x, y))] = true;
             x--;
         }
         if (c == 'E') {
+            blocked[make_pair(make_pair(x, y), make_pair(x + 1, y))] = true;
+            blocked[make_pair(make_pair(x + 1, y), make_pair(x, y))] = true;
             x++;
         }
-        grid[x][y] = 1;
     }
-    int id = 2;
+    for (auto &p : blocked) {
+        // cout << p.first.first.first << "," << p.first.first.second << " cannot access " << p.first.second.first << "," << p.first.second.second << endl;
+    }
+
     vector<vector<bool>> visited = vector<vector<bool>>(2 * N + 1, vector<bool>(2 * N + 1));
+    int count = 0;
     for (int x = 0; x <= 2 * N; x++) {
         for (int y = 0; y <= 2 * N; y++) {
-            if (!visited[x][y] && grid[x][y] == 0) {
-                graph.push_back(Node());
-                floodFill(x, y, visited, id);
-                id++;
+            if (!visited[x][y]) {
+                // cout << x << "," << y << " is valid " << endl;
+                floodFill(x, y, visited);
+                count++;
             }
         }
     }
-    fout << id - 2 << endl;
-
+    fout << count << endl;
     return 0;
 }
