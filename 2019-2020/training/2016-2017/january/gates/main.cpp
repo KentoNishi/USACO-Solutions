@@ -29,13 +29,6 @@ void floodFill(int x, int y, vector<vector<bool>> &visited, int id) {
     int dy[] = {0, 1, 0, -1};
     for (int i = 0; i < 4; i++) {
         floodFill(x + dx[i], y + dy[i], visited, id);
-        if (x + dx[i] == 2 * N + 1 || y + dy[i] == 2 * N + 1 || x + dx[i] == -1 || y + dy[i] == -1) {
-            continue;
-        }
-        if(grid[x + dx[i]][y+dy[i]]>grid[x][y]){
-            graph[id].canGo[grid[x + dx[i]][y+dy[i]]]=true;
-            graph[grid[x + dx[i]][y+dy[i]]].canGo[id]=true;
-        }
     }
     return;
 }
@@ -69,18 +62,14 @@ int main() {
     vector<vector<bool>> visited = vector<vector<bool>>(2 * N + 1, vector<bool>(2 * N + 1));
     for (int x = 0; x <= 2 * N; x++) {
         for (int y = 0; y <= 2 * N; y++) {
-            if (!visited[x][y]) {
+            if (!visited[x][y] && grid[x][y] == 0) {
                 graph.push_back(Node());
-                floodFill(x, y, visited, id++);
+                floodFill(x, y, visited, id);
+                id++;
             }
         }
     }
-    for (int y = 0; y <= 2 * N; y++) {
-        for (int x = 0; x <= 2 * N; x++) {
-            cout << grid[x][y] << " ";
-        }
-        cout << endl;
-    }
+    fout << id - 2 << endl;
 
     return 0;
 }
