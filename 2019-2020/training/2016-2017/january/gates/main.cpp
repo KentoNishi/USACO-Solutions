@@ -8,15 +8,19 @@ using namespace std;
 int N;
 
 struct Pixel {
-    map<pair<int, int>, bool> blocked;
+    vector<pair<int, int>> blocked;
     bool visited;
     int id = 0;
 };
 
 vector<vector<Pixel>> grid;
+int h = 0;
+int w = 0;
 
+int dx[] = {0, 0, -1, 1};
+int dy[] = {-1, 1, 0, 0};
 void floodFill(int x, int y, int id) {
-    if (x == -1 || y == -1 || x == 2 * N + 1 || y == 2 * N + 1) {
+    if (x == -1 || y == -1 || x == w || y == h) {
         return;
     }
     if (grid[x][y].visited) {
@@ -24,13 +28,11 @@ void floodFill(int x, int y, int id) {
     }
     grid[x][y].id = id;
     grid[x][y].visited = true;
-    int dx[] = {0, 0, -1, 1};
-    int dy[] = {-1, 1, 0, 0};
     for (int i = 0; i < 4; i++) {
-        if (x + dx[i] == -1 || y + dy[i] == -1 || x + dx[i] == 2 * N + 1 || y + dy[i] == 2 * N + 1) {
+        if (x + dx[i] == -1 || y + dy[i] == -1 || x + dx[i] == w || y + dy[i] == h) {
             continue;
         }
-        if (!grid[x][y].blocked[make_pair(x + dx[i], y + dy[i])]) {
+        if (find(grid[x][y].blocked.begin(), grid[x][y].blocked.end(), make_pair(x + dx[i], y + dy[i])) == grid[x][y].blocked.end()) {
             floodFill(x + dx[i], y + dy[i], id);
         }
     }
@@ -40,51 +42,77 @@ int main() {
     ifstream fin("gates.in");
     ofstream fout("gates.out");
     fin >> N;
-    grid = vector<vector<Pixel>>(2 * N + 1, vector<Pixel>(2 * N + 1));
     string s;
     fin >> s;
-    int x = N;
-    int y = N;
+    /*
+    int dx[] = {0, 0, -1, 1};
+    int dy[] = {-1, 1, 0, 0};
+    */
     for (int i = 0; i < s.size(); i++) {
         switch (s[i]) {
         case 'N': {
-            grid[x][y - 1].blocked[make_pair(x - 1, y - 1)] = true;
-            grid[x - 1][y - 1].blocked[make_pair(x, y - 1)] = true;
+            h++;
+        }
+
+        case 'S': {
+            h--;
+        }
+
+        case 'E': {
+            w++;
+        }
+
+        case 'W': {
+            w--;
+        }
+        }
+    }
+    w = 2 * abs(w) + 2;
+    h = 2 * abs(h) + 2;
+    grid = vector<vector<Pixel>>(w, vector<Pixel>(h));
+    int x = w / 2;
+    int y = w / 2;
+    for (int i = 0; i < N; i++) {
+        switch (s[i]) {
+        case 'N': {
+            grid[x][y - 1].blocked.push_back(make_pair(x - 1, y - 1));
+            grid[x - 1][y - 1].blocked.push_back(make_pair(x, y - 1));
             y--;
             break;
         }
 
         case 'S': {
-            grid[x][y].blocked[make_pair(x - 1, y)] = true;
-            grid[x - 1][y].blocked[make_pair(x, y)] = true;
+            grid[x][y].blocked.push_back(make_pair(x - 1, y));
+            grid[x - 1][y].blocked.push_back(make_pair(x, y));
             y++;
             break;
         }
 
         case 'E': {
-            grid[x][y].blocked[make_pair(x, y - 1)] = true;
-            grid[x][y - 1].blocked[make_pair(x, y)] = true;
+            grid[x][y].blocked.push_back(make_pair(x, y - 1));
+            grid[x][y - 1].blocked.push_back(make_pair(x, y));
             x++;
             break;
         }
 
         case 'W': {
-            grid[x - 1][y].blocked[make_pair(x - 1, y - 1)] = true;
-            grid[x - 1][y - 1].blocked[make_pair(x - 1, y)] = true;
+            grid[x - 1][y].blocked.push_back(make_pair(x - 1, y - 1));
+            grid[x - 1][y - 1].blocked.push_back(make_pair(x - 1, y));
             x--;
             break;
         }
-        } /*
-        for (int y1 = 0; y1 < 2 * N + 1; y1++) {
-            for (int x1 = 0; x1 < 2 * N + 1; x1++) {
-                if (y1 < 2 * N && grid[x1][y1].blocked[x1][y1 + 1]) {
+        }
+        /*
+        for (int y1 = 0; y1 < h; y1++) {
+            for (int x1 = 0; x1 < w; x1++) {
+                if (y1 < h && find(grid[x1][y1].blocked.begin(), grid[x1][y1].blocked.end(), make_pair(x1, y1 + 1)) != grid[x1][y1].blocked.end()) {
                     cout << "\033[4m"
                          << (x1 == x && y1 == y ? "#" : "`") << "\033[0m";
                 } else {
                     cout << (x1 == x && y1 == y ? "#" : "`");
                 }
 
-                if (x1 < 2 * N && grid[x1][y1].blocked[x1 + 1][y1]) {
+                if (x1 < w && find(grid[x1][y1].blocked.begin(), grid[x1][y1].blocked.end(), make_pair(x1 + 1, y1)) != grid[x1][y1].blocked.end()) {
                     cout << "|";
                 } else {
                     cout << " ";
@@ -92,15 +120,15 @@ int main() {
             }
             cout << endl;
         }
-        for (int x1 = 0; x1 < 2 * N + 1; x1++) {
+        for (int x1 = 0; x1 < w; x1++) {
             cout << " =";
         }
         cout << endl;*/
     }
     int count = 0;
     int id = 1;
-    for (int y = 0; y < 2 * N + 1; y++) {
-        for (int x = 0; x < 2 * N + 1; x++) {
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
             if (!grid[x][y].visited) {
                 floodFill(x, y, id++);
                 count++;
