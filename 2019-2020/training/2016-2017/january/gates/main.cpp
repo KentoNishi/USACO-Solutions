@@ -1,5 +1,5 @@
 // Test case path: [path]
-// gates - Division - Month Season
+// gates - Silver - January 2015-2016
 // http://usaco.org/index.php?page=viewproblem2&cpid=596
 
 #include <bits/stdc++.h>
@@ -48,30 +48,65 @@ int main() {
     int dx[] = {0, 0, -1, 1};
     int dy[] = {-1, 1, 0, 0};
     */
+    int minX = 0;
+    int minY = 0;
+    int maxX = 0;
+    int maxY = 0;
+    int x = 0;
+    int y = 0;
     for (int i = 0; i < s.size(); i++) {
+        minY = min(minY, y);
+        maxY = max(maxY, y);
+        maxX = max(maxX, x);
+        minX = min(minX, x);
         switch (s[i]) {
         case 'N': {
-            h++;
+            y--;
+            break;
         }
 
         case 'S': {
-            h--;
+            y++;
+            break;
         }
 
         case 'E': {
-            w++;
+            x++;
+            break;
         }
 
         case 'W': {
-            w--;
+            x--;
+            break;
         }
         }
     }
-    w = 2 * abs(w) + 2;
-    h = 2 * abs(h) + 2;
-    grid = vector<vector<Pixel>>(w, vector<Pixel>(h));
-    int x = w / 2;
-    int y = w / 2;
+    w = maxX - minX + 2;
+    h = maxY - minY + 2;
+    x = -minX + 1;
+    y = -minY + 1;
+    grid = vector<vector<Pixel>>(w, vector<Pixel>(h)); /*
+    for (int y1 = 0; y1 < h; y1++) {
+        for (int x1 = 0; x1 < w; x1++) {
+            if (y1 < h && find(grid[x1][y1].blocked.begin(), grid[x1][y1].blocked.end(), make_pair(x1, y1 + 1)) != grid[x1][y1].blocked.end()) {
+                cout << "\033[4m"
+                     << (x1 == x && y1 == y ? "#" : "`") << "\033[0m";
+            } else {
+                cout << (x1 == x && y1 == y ? "#" : "`");
+            }
+
+            if (x1 < w && find(grid[x1][y1].blocked.begin(), grid[x1][y1].blocked.end(), make_pair(x1 + 1, y1)) != grid[x1][y1].blocked.end()) {
+                cout << "|";
+            } else {
+                cout << " ";
+            }
+        }
+        cout << endl;
+    }
+    for (int x1 = 0; x1 < w; x1++) {
+        cout << " =";
+    }*/
+    cout << endl;
     for (int i = 0; i < N; i++) {
         switch (s[i]) {
         case 'N': {
