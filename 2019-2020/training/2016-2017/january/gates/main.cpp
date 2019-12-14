@@ -6,24 +6,32 @@
 using namespace std;
 
 int N;
-map<pair<pair<int, int>, pair<int, int>>, bool> blocked;
 
-void floodFill(int x, int y, vector<vector<bool>> &visited) {
-    if (x == 2 * N + 1 || y == 2 * N + 1 || x == -1 || y == -1) {
+struct Pixel {
+    map<pair<int, int>, bool> blocked;
+    bool visited;
+    int id = 0;
+};
+
+vector<vector<Pixel>> grid;
+
+void floodFill(int x, int y, int id) {
+    if (x == -1 || y == -1 || x == 2 * N + 1 || y == 2 * N + 1) {
         return;
     }
-    if (visited[x][y]) {
+    if (grid[x][y].visited) {
         return;
     }
-    visited[x][y] = true;
+    grid[x][y].id = id;
+    grid[x][y].visited = true;
     int dx[] = {0, 0, -1, 1};
     int dy[] = {-1, 1, 0, 0};
     for (int i = 0; i < 4; i++) {
-        if (x + dx[i] == 2 * N + 1 || y + dy[i] == 2 * N + 1 || x + dx[i] == -1 || y + dy[i] == -1) {
+        if (x + dx[i] == -1 || y + dy[i] == -1 || x + dx[i] == 2 * N + 1 || y + dy[i] == 2 * N + 1) {
             continue;
         }
-        if (!blocked[make_pair(make_pair(x, y), make_pair(x + dx[i], y + dy[i]))]) {
-            floodFill(x + dx[i], y + dy[i], visited);
+        if (!grid[x][y].blocked[make_pair(x + dx[i], y + dy[i])]) {
+            floodFill(x + dx[i], y + dy[i], id);
         }
     }
 }
@@ -32,47 +40,73 @@ int main() {
     ifstream fin("gates.in");
     ofstream fout("gates.out");
     fin >> N;
-    int x = N;
-    int y = N;
+    grid = vector<vector<Pixel>>(2 * N + 1, vector<Pixel>(2 * N + 1));
     string s;
     fin >> s;
-    for (auto &c : s) {
-        if (c == 'N') {
-            blocked[make_pair(make_pair(x, y), make_pair(x, y - 1))] = true;
-            blocked[make_pair(make_pair(x, y - 1), make_pair(x, y))] = true;
+    int x = N;
+    int y = N;
+    for (int i = 0; i < s.size(); i++) {
+        switch (s[i]) {
+        case 'N': {
+            grid[x][y - 1].blocked[make_pair(x - 1, y - 1)] = true;
+            grid[x - 1][y - 1].blocked[make_pair(x, y - 1)] = true;
             y--;
+            break;
         }
-        if (c == 'S') {
-            blocked[make_pair(make_pair(x, y), make_pair(x, y + 1))] = true;
-            blocked[make_pair(make_pair(x, y + 1), make_pair(x, y))] = true;
-            y++;
-        }
-        if (c == 'W') {
-            blocked[make_pair(make_pair(x, y), make_pair(x - 1, y))] = true;
-            blocked[make_pair(make_pair(x - 1, y), make_pair(x, y))] = true;
-            x--;
-        }
-        if (c == 'E') {
-            blocked[make_pair(make_pair(x, y), make_pair(x + 1, y))] = true;
-            blocked[make_pair(make_pair(x + 1, y), make_pair(x, y))] = true;
-            x++;
-        }
-    }
-    for (auto &p : blocked) {
-        // cout << p.first.first.first << "," << p.first.first.second << " cannot access " << p.first.second.first << "," << p.first.second.second << endl;
-    }
 
-    vector<vector<bool>> visited = vector<vector<bool>>(2 * N + 1, vector<bool>(2 * N + 1));
+        case 'S': {
+            grid[x][y].blocked[make_pair(x - 1, y)] = true;
+            grid[x - 1][y].blocked[make_pair(x, y)] = true;
+            y++;
+            break;
+        }
+
+        case 'E': {
+            grid[x][y].blocked[make_pair(x, y - 1)] = true;
+            grid[x][y - 1].blocked[make_pair(x, y)] = true;
+            x++;
+            break;
+        }
+
+        case 'W': {
+            grid[x - 1][y].blocked[make_pair(x - 1, y - 1)] = true;
+            grid[x - 1][y - 1].blocked[make_pair(x - 1, y)] = true;
+            x--;
+            break;
+        }
+        } /*
+        for (int y1 = 0; y1 < 2 * N + 1; y1++) {
+            for (int x1 = 0; x1 < 2 * N + 1; x1++) {
+                if (y1 < 2 * N && grid[x1][y1].blocked[x1][y1 + 1]) {
+                    cout << "\033[4m"
+                         << (x1 == x && y1 == y ? "#" : "`") << "\033[0m";
+                } else {
+                    cout << (x1 == x && y1 == y ? "#" : "`");
+                }
+
+                if (x1 < 2 * N && grid[x1][y1].blocked[x1 + 1][y1]) {
+                    cout << "|";
+                } else {
+                    cout << " ";
+                }
+            }
+            cout << endl;
+        }
+        for (int x1 = 0; x1 < 2 * N + 1; x1++) {
+            cout << " =";
+        }
+        cout << endl;*/
+    }
     int count = 0;
-    for (int x = 0; x <= 2 * N; x++) {
-        for (int y = 0; y <= 2 * N; y++) {
-            if (!visited[x][y]) {
-                // cout << x << "," << y << " is valid " << endl;
-                floodFill(x, y, visited);
+    int id = 1;
+    for (int y = 0; y < 2 * N + 1; y++) {
+        for (int x = 0; x < 2 * N + 1; x++) {
+            if (!grid[x][y].visited) {
+                floodFill(x, y, id++);
                 count++;
             }
         }
     }
-    fout << count << endl;
+    fout << count - 1 << endl;
     return 0;
 }
