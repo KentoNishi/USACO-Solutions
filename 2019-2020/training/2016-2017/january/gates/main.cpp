@@ -85,27 +85,7 @@ int main() {
     h = maxY - minY + 2;
     x = -minX + 1;
     y = -minY + 1;
-    grid = vector<vector<Pixel>>(w, vector<Pixel>(h)); /*
-    for (int y1 = 0; y1 < h; y1++) {
-        for (int x1 = 0; x1 < w; x1++) {
-            if (y1 < h && find(grid[x1][y1].blocked.begin(), grid[x1][y1].blocked.end(), make_pair(x1, y1 + 1)) != grid[x1][y1].blocked.end()) {
-                cout << "\033[4m"
-                     << (x1 == x && y1 == y ? "#" : "`") << "\033[0m";
-            } else {
-                cout << (x1 == x && y1 == y ? "#" : "`");
-            }
-
-            if (x1 < w && find(grid[x1][y1].blocked.begin(), grid[x1][y1].blocked.end(), make_pair(x1 + 1, y1)) != grid[x1][y1].blocked.end()) {
-                cout << "|";
-            } else {
-                cout << " ";
-            }
-        }
-        cout << endl;
-    }
-    for (int x1 = 0; x1 < w; x1++) {
-        cout << " =";
-    }*/
+    grid = vector<vector<Pixel>>(w, vector<Pixel>(h));
     cout << endl;
     for (int i = 0; i < N; i++) {
         switch (s[i]) {
@@ -137,28 +117,6 @@ int main() {
             break;
         }
         }
-        /*
-        for (int y1 = 0; y1 < h; y1++) {
-            for (int x1 = 0; x1 < w; x1++) {
-                if (y1 < h && find(grid[x1][y1].blocked.begin(), grid[x1][y1].blocked.end(), make_pair(x1, y1 + 1)) != grid[x1][y1].blocked.end()) {
-                    cout << "\033[4m"
-                         << (x1 == x && y1 == y ? "#" : "`") << "\033[0m";
-                } else {
-                    cout << (x1 == x && y1 == y ? "#" : "`");
-                }
-
-                if (x1 < w && find(grid[x1][y1].blocked.begin(), grid[x1][y1].blocked.end(), make_pair(x1 + 1, y1)) != grid[x1][y1].blocked.end()) {
-                    cout << "|";
-                } else {
-                    cout << " ";
-                }
-            }
-            cout << endl;
-        }
-        for (int x1 = 0; x1 < w; x1++) {
-            cout << " =";
-        }
-        cout << endl;*/
     }
     int count = 0;
     int id = 1;
