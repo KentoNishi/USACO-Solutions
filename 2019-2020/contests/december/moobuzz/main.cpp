@@ -1,6 +1,6 @@
 // Test case path: [path]
 // moobuzz - Division - Month Season
-// url
+// http://usaco.org/index.php?page=viewproblem&cpid=954
 
 #include <bits/stdc++.h>
 using namespace std;

@@ -1,6 +1,6 @@
 // Test case path: [path]
 // milkvisits - Division - Month Season
-// url
+// http://usaco.org/index.php?page=viewproblem&cpid=956
 
 #include <bits/stdc++.h>
 using namespace std;
