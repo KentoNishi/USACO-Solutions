@@ -1,5 +1,5 @@
 // Test case path: [path]
-// milkvisits - Division - Month Season
+// milkvisits - Silver - December 2019-2020
 // http://usaco.org/index.php?page=viewproblem&cpid=956
 
 #include <bits/stdc++.h>
@@ -9,34 +9,21 @@ int N, M;
 struct Farm {
     char type;
     vector<int> edges;
-    bool visited;
+    int region = -1;
 };
 
 vector<Farm> farms;
-//vector<vector<pair<bool,bool>>> mem;
 
-bool flood(int a, int b, bool &H, bool &G) {
-    if (a == b) {
-        H = farms[a].type == 'H';
-        G = farms[a].type == 'G';
-        return true;
+void dfs(int i, int r) {
+    if (farms[i].region >= 0) {
+        return;
     }
-    if (farms[a].visited) {
-        return false;
-    }
-    farms[a].visited = true;
-    for (auto &edge : farms[a].edges) {
-        if (flood(edge, b, H, G)) {
-            if (!H) {
-                H = (farms[edge].type == 'H' || farms[a].type == 'H');
-            }
-            if (!G) {
-                G = (farms[edge].type == 'G' || farms[a].type == 'G');
-            }
-            return true;
+    farms[i].region = r;
+    for (auto &edge : farms[i].edges) {
+        if (farms[edge].type == farms[i].type) {
+            dfs(edge, r);
         }
     }
-    return false;
 }
 
 int main() {
@@ -46,7 +33,6 @@ int main() {
     string s;
     fin >> s;
     farms = vector<Farm>(N);
-    //    mem=vector<vector<pair<bool,bool>>>(N,vector<pair<bool,bool>>(N));
     for (int i = 0; i < N; i++) {
         farms[i].type = s[i];
     }
@@ -58,24 +44,24 @@ int main() {
         farms[a].edges.push_back(b);
         farms[b].edges.push_back(a);
     }
+    int regionID = 0;
+    for (int i = 0; i < N; i++) {
+        if (farms[i].region == -1) {
+            dfs(i, regionID++);
+        }
+    }
     for (int i = 0; i < M; i++) {
         int a, b;
         char c;
-        bool H, G = false;
         fin >> a >> b >> c;
         a--;
         b--;
-        flood(a, b, H, G);
-        if (H && c == 'H') {
-            fout << 1;
-        } else if (G && c == 'G') {
+        if (farms[a].region != farms[b].region || farms[a].type == c) {
             fout << 1;
         } else {
             fout << 0;
         }
-        for (int k = 0; k < N; k++) {
-            farms[k].visited = false;
-        }
     }
+    fout << endl;
     return 0;
 }
