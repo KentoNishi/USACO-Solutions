@@ -48,6 +48,7 @@
         "ratio": "cpp",
         "set": "cpp",
         "unordered_set": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "list": "cpp"
     }
 }

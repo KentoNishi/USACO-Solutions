@@ -12,48 +12,45 @@ int main() {
     ofstream fout("cbarn.out");
     fin >> N;
     vector<int> rooms = vector<int>(N);
-    int rightMostEmpty = -1;
+    int endPoint = -1;
+    int sum = 0;
     for (int i = 0; i < N; i++) {
         fin >> rooms[i];
-        if (rooms[i] == 0) {
-            rightMostEmpty = i;
+        sum += rooms[i];
+        if (sum == i) {
+            endPoint = i;
         }
     }
-    if (rightMostEmpty == -1) {
+    if (endPoint == -1) {
         fout << 0 << endl;
         return 0;
     }
-    stack<int> recentWaiting;
-    int index = rightMostEmpty;
-    int ans = 0;
+    int index = (endPoint + 1) % N;
+    int newIndex = 0;
+    vector<int> shiftedRooms = vector<int>(N);
     while (true) {
-        for (int i = 0; i < rooms[index]; i++) {
-            recentWaiting.emplace(index);
-        }
+        shiftedRooms[newIndex] = rooms[index];
+        newIndex++;
         index++;
         index %= N;
-        if (index == rightMostEmpty) {
+        if (index == endPoint) {
             break;
         }
     }
-    while (true) {
-        if (rooms[index] == 0) {
-            int closest = recentWaiting.top();
-            recentWaiting.pop();
-            if (index > closest) {
-                ans += pow(index - closest, 2);
-            } else {
-                ans += pow(N - (closest - index), 2);
-            }
-            rooms[index]++;
-            rooms[closest]--;
+    stack<int> cowsToPlace;
+    for (int i = 0; i < N; i++) {
+        for (int k = 0; k < shiftedRooms[i]; k++) {
+            cowsToPlace.emplace(i);
         }
-        index--;
-        if (index == -1) {
-            index = N - 1;
-        }
-        if (index == rightMostEmpty) {
-            break;
+    }
+    int ans = 0;
+    for (int i = N - 1; i >= 0; i--) {
+        if (shiftedRooms[i] == 0) {
+            int closest = cowsToPlace.top();
+            cowsToPlace.pop();
+            ans += pow(i - closest, 2);
+            shiftedRooms[i]++;
+            shiftedRooms[closest]--;
         }
     }
     fout << ans << endl;
