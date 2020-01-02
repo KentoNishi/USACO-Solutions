@@ -14,6 +14,32 @@
     "tasks": [
         {
             "type": "shell",
+            "label": "g++ build active file",
+            "linux":{
+                "command": "/usr/bin/g++",
+                "args": [
+                    "-g",
+                    "${file}",
+                    "-o",
+                    "${fileDirname}/${fileBasenameNoExtension}"
+                ],
+                "options": {
+                    "cwd": "/usr/bin"
+                },
+                "problemMatcher": [
+                    "$gcc"
+                ],
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                }
+            }
+        }
+    ]
+    /*,
+    "tasks": [
+        {
+            "type": "shell",
             "label": "USACO Tests",
             "windows": {
                 "command": "cmd.exe",
@@ -32,22 +58,5 @@
                 "isDefault": true
             }
         }
-    ] /*,
-    "tasks": [
-        {
-            "label": "Build on WSL",
-            "type": "shell",
-            "command": "g++",
-            "args": [
-                "-g",
-                "-o",
-                "result",
-                "main.cpp"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        }
-    ]*/
+    ] ,*/
 }

@@ -2,33 +2,54 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "C++ (GDB/LLDB)",
+            "name": "Build and Debug C++ (GDB/LLDB)",
             "type": "cppdbg",
-            "request": "launch",
-            "program": "result",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": ".",
-            "environment": [],
             "externalConsole": false,
-            "pipeTransport": {
-                "debuggerPath": "cd $(wslpath '${fileDirname}') && g++ ${fileBasename} -o result -g -Wall && stdbuf -i0 -o0 -e0 gdb",
-                "pipeProgram": "${env:windir}\\system32\\bash.exe",
-                "pipeArgs": [
-                    "-c"
+            "request": "launch",
+            "windows": {
+                "program": "result",
+                "args": [],
+                "stopAtEntry": false,
+                "cwd": ".",
+                "environment": [],
+                "pipeTransport": {
+                    "debuggerPath": "cd $(wslpath '${fileDirname}') && g++ ${fileBasename} -o result -g -Wall && stdbuf -i0 -o0 -e0 gdb",
+                    "pipeProgram": "C:\\Windows\\Sysnative\\bash.exe",
+                    "pipeArgs": [
+                        "-c"
+                    ],
+                    "pipeCwd": ""
+                },
+                "setupCommands": [
+                    {
+                        "description": "Enable pretty-printing for gdb",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
                 ],
-                "pipeCwd": ""
+                "sourceFileMap": {
+                    "\\mnt\\c": "C:\\",
+                    "\\usr": "C:\\Users\\kento\\AppData\\Local\\Packages\\TheDebianProject.DebianGNULinux_76v4gfsz19hv4\\LocalState\\rootfs\\usr",
+                }
             },
-            "setupCommands": [
-                {
+            "linux":{
+                "program": "${fileDirname}/${fileBasenameNoExtension}",
+                "internalConsoleOptions":"openOnSessionStart",
+                "args": [],
+                "stopAtEntry": false,
+                "cwd": "${fileDirname}",
+                "environment": [],
+                "externalConsole": false,
+                "MIMode": "gdb",
+                "setupCommands": [
+                  {
                     "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
-                }
-            ],
-            "sourceFileMap": {
-                "\\mnt\\c": "C:\\",
-                "\\usr": "C:\\Users\\kento\\AppData\\Local\\Packages\\TheDebianProject.DebianGNULinux_76v4gfsz19hv4\\LocalState\\rootfs\\usr",
+                  }
+                ],
+                "preLaunchTask": "g++ build active file",
+                "miDebuggerPath": "/usr/bin/gdb"
             }
         }
     ]
