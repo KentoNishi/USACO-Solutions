@@ -3,12 +3,13 @@
     "configurations": [
         {
             "name": "Build and Debug C++ (GDB/LLDB)",
+            "program": "result",
             "type": "cppdbg",
-            "externalConsole": false,
             "request": "launch",
             "windows": {
                 "program": "result",
                 "args": [],
+                "externalConsole": false,
                 "stopAtEntry": false,
                 "cwd": ".",
                 "environment": [],
@@ -32,21 +33,20 @@
                     "\\usr": "C:\\Users\\kento\\AppData\\Local\\Packages\\TheDebianProject.DebianGNULinux_76v4gfsz19hv4\\LocalState\\rootfs\\usr",
                 }
             },
-            "linux":{
+            "linux": {
                 "program": "${fileDirname}/${fileBasenameNoExtension}",
-                "internalConsoleOptions":"openOnSessionStart",
-                "args": [],
+                "externalConsole": false,
+                "avoidWindowsConsoleRedirection": true,
                 "stopAtEntry": false,
                 "cwd": "${fileDirname}",
                 "environment": [],
-                "externalConsole": false,
                 "MIMode": "gdb",
                 "setupCommands": [
-                  {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                  }
+                    {
+                        "description": "Enable pretty-printing for gdb",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
                 ],
                 "preLaunchTask": "g++ build active file",
                 "miDebuggerPath": "/usr/bin/gdb"
