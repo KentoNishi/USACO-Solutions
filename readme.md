@@ -13,5 +13,5 @@ Extra files such as ``solution.[format]`` (the official solution) may be include
   ```
   g++ main.cpp -g -o result;./result;
   ```
-* In Visual Studio Code, the debug tasks are configured using GDB on WSL.
+* In Visual Studio Code, the debug tasks are configured using GDB and g++ on WSL.
 * Additional solutions are available in the [AlphaStar-CC34-Winter19](https://github.com/KentoNishi/AlphaStar-CC34-Winter19) repository.
