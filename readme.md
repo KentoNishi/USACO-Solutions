@@ -6,7 +6,7 @@ Solutions are written in C++, and the file is named ``main.cpp``. ``[name].in`` 
 Extra files such as ``solution.[format]`` (the official solution) may be included in the problem directory.
 
 ## Other Information
-* Directories named ``[name]-v2`` contain re-writes of the original solution.
+* Directories with the naming scheme ``[name]-vX`` contain re-writes of the original solution.
 * Many different versions of the same problem may exist.
 * Each season's directory may contain problems from previous contests.
 * The programs can be run with any C++ compiler, or with the following command:
