@@ -2,8 +2,8 @@
 Solutions to algorithmic problems from [http://www.usaco.org](http://www.usaco.org).
 
 ## About
-Solutions are written in C++, and the file is named ``main.cpp``. ``[name].in`` and ``[name].out`` contains the given example in the specific problem.
-Extra files such as ``solution.[format]`` (the official solution) may be included in the problem directory.
+Solutions are written in C++, and the file is named ``main.cpp``.
+Extra files such as ``solution.[language]`` (the official solution) may be included in the solution directory.
 
 ## Other Information
 * Directories with the naming scheme ``[name]-vX`` contain re-writes of the original solution.
