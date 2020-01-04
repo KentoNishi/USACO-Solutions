@@ -28,12 +28,16 @@ int main() {
         }
     }
     int ans = 0;
+    int bPoint = 0;
     for (int i = 0; i < N; i++) {
-        int e = elsie[i];
-        auto b = lower_bound(bessie.begin(), bessie.end(), e);
-        if (b != bessie.end()) {
+        while (bPoint < N && elsie[i] >= bessie[bPoint]) {
+            bPoint++;
+        }
+        if (bPoint < N) {
             ans++;
-            bessie.erase(b);
+            bPoint++;
+        } else {
+            break;
         }
     }
     fout << ans << endl;
