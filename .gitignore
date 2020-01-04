@@ -1,5 +1,3 @@
 result*
 .vscode/ipch/*
 main
-*.in
-*.out
