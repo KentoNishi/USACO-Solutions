@@ -1,5 +1,5 @@
-// Test case path: [path]
-// highcard - Division - Month Season
+// Test case path: [C:\Users\kento\Downloads\highcard_silver_dec15]
+// highcard - Silver - December 2015-2016
 // http://usaco.org/index.php?page=viewproblem2&cpid=571
 
 #include <bits/stdc++.h>
