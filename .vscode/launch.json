@@ -31,7 +31,8 @@
                 "sourceFileMap": {
                     "\\mnt\\c": "C:\\",
                     "\\usr": "C:\\Users\\kento\\AppData\\Local\\Packages\\TheDebianProject.DebianGNULinux_76v4gfsz19hv4\\LocalState\\rootfs\\usr",
-                }
+                },
+                "internalConsoleOptions": "openOnSessionStart"
             },
             "linux": {
                 "program": "${fileDirname}/${fileBasenameNoExtension}",
