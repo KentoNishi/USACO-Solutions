@@ -14,6 +14,14 @@ struct compareX {
     }
 };
 
+pair<vector<int>, vector<int>> removeFromVectors(vector<int> &v1, vector<int> &v2, int n1, int n2) {
+    auto p1 = v1.begin() + n1;
+    auto p2 = v2.begin() + n2;
+    v1.erase(p1);
+    v2.erase(p2);
+    return make_pair(v1, v2);
+}
+
 struct compareY {
     bool operator()(int a, int b) const {
         return points[a].second < points[b].second;
@@ -28,45 +36,17 @@ int findArea(vector<int> sortedByX, vector<int> sortedByY, int haveSold) {
         return area;
     }
     haveSold++;
-    {
-        // remove smallest X
-        vector<int> byX = sortedByX;
-        vector<int> byY = sortedByY;
-        auto ptr = byX.begin();
-        int val = *ptr;
-        byX.erase(ptr);
-        byY.erase(find(byY.begin(), byY.end(), val));
-        area = min(area, findArea(byX, byY, haveSold));
-    }
-    {
-        // remove smallest Y
-        vector<int> byX = sortedByX;
-        vector<int> byY = sortedByY;
-        auto ptr = byY.begin();
-        int val = *ptr;
-        byX.erase(find(byX.begin(), byX.end(), val));
-        byY.erase(ptr);
-        area = min(area, findArea(byX, byY, haveSold));
-    }
-    {
-        // remove largest X
-        vector<int> byX = sortedByX;
-        vector<int> byY = sortedByY;
-        auto ptr = (--byX.end());
-        int val = *ptr;
-        byX.erase(ptr);
-        byY.erase(find(byY.begin(), byY.end(), val));
-        area = min(area, findArea(byX, byY, haveSold));
-    }
-    {
-        // remove largest Y
-        vector<int> byX = sortedByX;
-        vector<int> byY = sortedByY;
-        auto ptr = (--byY.end());
-        int val = *ptr;
-        byX.erase(find(byX.begin(), byX.end(), val));
-        byY.erase(ptr);
-        area = min(area, findArea(byX, byY, haveSold));
+    vector<pair<vector<int>::iterator, vector<int>::iterator>> iters = {
+        {sortedByX.begin(), find(sortedByY.begin(), sortedByY.end(), *sortedByX.begin())},
+        {find(sortedByX.begin(), sortedByX.end(), *sortedByY.begin()), sortedByY.begin()},
+        {(--sortedByX.end()), find(sortedByY.begin(), sortedByY.end(), *(--sortedByX.end()))},
+        {find(sortedByX.begin(), sortedByX.end(), *(--sortedByY.end())), (--sortedByY.end())},
+    };
+    for (pair<vector<int>::iterator, vector<int>::iterator> &iter : iters) {
+        pair<vector<int>, vector<int>> removed = {sortedByX, sortedByY};
+        pair<int, int> dists = {distance(sortedByX.begin(), iter.first), distance(sortedByY.begin(), iter.second)};
+        removeFromVectors(removed.first, removed.second, dists.first, dists.second);
+        area = min(area, findArea(removed.first, removed.second, haveSold));
     }
     return area;
 }
