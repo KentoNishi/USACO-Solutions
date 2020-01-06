@@ -20,8 +20,7 @@ struct compareY {
     }
 };
 
-int findArea(multiset<int, compareX> sortedByX, multiset<int, compareY> sortedByY, int haveSold) {
-    // cout << sortedByX.size() << "," << sortedByY.size() << endl;
+int findArea(vector<int> sortedByX, vector<int> sortedByY, int haveSold) {
     int dx = points[*(--sortedByX.end())].first - points[*(sortedByX.begin())].first;
     int dy = points[*(--sortedByY.end())].second - points[*(sortedByY.begin())].second;
     int area = (dy * dx);
@@ -31,37 +30,41 @@ int findArea(multiset<int, compareX> sortedByX, multiset<int, compareY> sortedBy
     haveSold++;
     {
         // remove smallest X
-        multiset<int, compareX> byX = sortedByX;
-        multiset<int, compareY> byY = sortedByY;
+        vector<int> byX = sortedByX;
+        vector<int> byY = sortedByY;
         auto ptr = byX.begin();
+        int val = *ptr;
         byX.erase(ptr);
-        byY.erase(byY.find(*ptr));
+        byY.erase(find(byY.begin(), byY.end(), val));
         area = min(area, findArea(byX, byY, haveSold));
     }
     {
         // remove smallest Y
-        multiset<int, compareX> byX = sortedByX;
-        multiset<int, compareY> byY = sortedByY;
+        vector<int> byX = sortedByX;
+        vector<int> byY = sortedByY;
         auto ptr = byY.begin();
-        byX.erase(byX.find(*ptr));
+        int val = *ptr;
+        byX.erase(find(byX.begin(), byX.end(), val));
         byY.erase(ptr);
         area = min(area, findArea(byX, byY, haveSold));
     }
     {
         // remove largest X
-        multiset<int, compareX> byX = sortedByX;
-        multiset<int, compareY> byY = sortedByY;
+        vector<int> byX = sortedByX;
+        vector<int> byY = sortedByY;
         auto ptr = (--byX.end());
+        int val = *ptr;
         byX.erase(ptr);
-        byY.erase(byY.find(*ptr));
+        byY.erase(find(byY.begin(), byY.end(), val));
         area = min(area, findArea(byX, byY, haveSold));
     }
     {
         // remove largest Y
-        multiset<int, compareX> byX = sortedByX;
-        multiset<int, compareY> byY = sortedByY;
+        vector<int> byX = sortedByX;
+        vector<int> byY = sortedByY;
         auto ptr = (--byY.end());
-        byX.erase(byX.find(*ptr));
+        int val = *ptr;
+        byX.erase(find(byX.begin(), byX.end(), val));
         byY.erase(ptr);
         area = min(area, findArea(byX, byY, haveSold));
     }
@@ -73,13 +76,15 @@ int main() {
     ofstream fout("reduce.out");
     fin >> N;
     points.resize(N);
-    multiset<int, compareX> sortedByX;
-    multiset<int, compareY> sortedByY;
+    vector<int> sortedByX;
+    vector<int> sortedByY;
     for (int i = 0; i < N; i++) {
         fin >> points[i].first >> points[i].second;
-        sortedByX.insert(i);
-        sortedByY.insert(i);
+        sortedByX.push_back(i);
+        sortedByY.push_back(i);
     }
+    sort(sortedByX.begin(), sortedByX.end(), compareX());
+    sort(sortedByY.begin(), sortedByY.end(), compareY());
     fout << findArea(sortedByX, sortedByY, 0) << endl;
     return 0;
 }
