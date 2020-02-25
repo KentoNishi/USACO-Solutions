@@ -1,5 +1,5 @@
 // Test case path: [path]
-// triangles - Division - Month Season
+// triangles - Silver - February 2019-2020
 // url
 
 #include <bits/stdc++.h>
