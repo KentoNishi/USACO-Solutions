@@ -1,62 +1,86 @@
 // Test case path: [path]
 // triangles - Silver - February 2019-2020
-// url
+// http://usaco.org/index.php?page=viewproblem2&cpid=1015
 
 #include <bits/stdc++.h>
 using namespace std;
+
+struct Point {
+    long long x;
+    long long y;
+    long long width;
+    long long height;
+};
+
+const long long OFFSET = pow(10, 4);
+const long long GRIDSIZE = 2 * OFFSET + 1;
+const long long MODULO = 1e9 + 7;
+vector<Point> points;
+
+void findSums(vector<vector<long long>> &onAxis, bool axisIsX) {
+    for (long long i = 0; i < GRIDSIZE; i++) {
+        vector<long long> &arr = onAxis[i];
+        if (arr.size() == 0) {
+            continue;
+        }
+        sort(arr.begin(), arr.end(), [&](long long a, long long b) {
+            if (axisIsX) {
+                return points[a].y < points[b].y;
+            } else {
+                return points[a].x < points[b].x;
+            }
+        });
+        vector<long long> distSums = vector<long long>(arr.size());
+        for (long long j = 1; j < arr.size(); j++) {
+            long long dist = abs(points[arr[0]].y - points[arr[j]].y);
+            if (!axisIsX) {
+                dist = abs(points[arr[0]].x - points[arr[j]].x);
+            }
+            distSums[0] += dist;
+        }
+        if (axisIsX) {
+            points[arr[0]].height = distSums[0];
+        } else {
+            points[arr[0]].width = distSums[0];
+        }
+        for (long long j = 1; j < arr.size(); j++) {
+            long long dist = abs(points[arr[j - 1]].y - points[arr[j]].y);
+            if (!axisIsX) {
+                dist = abs(points[arr[j - 1]].x - points[arr[j]].x);
+            }
+            distSums[j] = distSums[j - 1] + dist * (2 * j - arr.size());
+            if (axisIsX) {
+                points[arr[j]].height = distSums[j];
+            } else {
+                points[arr[j]].width = distSums[j];
+            }
+        }
+    }
+}
 
 int main() {
     ifstream fin("triangles.in");
     ofstream fout("triangles.out");
     long long N;
     fin >> N;
-    vector<pair<long long, long long>> points;
-    points.resize(N);
+    points = vector<Point>(N);
+    vector<vector<long long>> withX = vector<vector<long long>>(GRIDSIZE);
+    vector<vector<long long>> withY = vector<vector<long long>>(GRIDSIZE);
     for (long long i = 0; i < N; i++) {
-        fin >> points[i].first >> points[i].second;
-        points[i].first += pow(10, 4);
-        points[i].second += pow(10, 4);
+        fin >> points[i].x >> points[i].y;
+        points[i].x += OFFSET;
+        points[i].y += OFFSET;
+        withX[points[i].x].push_back(i);
+        withY[points[i].y].push_back(i);
     }
-    unordered_map<long long, vector<long long>> pointsWithX;
-    unordered_map<long long, vector<long long>> pointsWithY;
-    for (long long i = 0; i < N; i++) {
-        pointsWithY[points[i].second].push_back(i);
-        pointsWithX[points[i].first].push_back(i);
-    }
+    findSums(withX, true);
+    findSums(withY, false);
     long long ans = 0;
-    // for each x value
-    for (auto it1 : pointsWithX) {
-        long long xValue = it1.first;
-        vector<long long> &pointsOnX = it1.second;
-        if (pointsOnX.size() == 1) {
-            continue;
-        }
-        // for each point in that x axis
-        for (auto it2 : pointsOnX) {
-            pair<long long, long long> thePoint = points[it2];
-            // for each point with the same y value as thePoint
-            long long width = 0;
-            long long height = 0;
-            if (pointsWithY[thePoint.second].size() == 1) {
-                goto theEnd;
-            }
-            for (auto it3 : pointsWithY[thePoint.second]) {
-                pair<long long, long long> thePoint2 = points[it3];
-                // add the difference in x to the widths
-                width += abs(thePoint2.first - thePoint.first);
-                width %= 1000000007;
-            }
-            for (auto it3 : pointsOnX) {
-                pair<long long, long long> thePoint2 = points[it3];
-                // add the difference in y to the heights
-                height += abs(thePoint2.second - thePoint.second);
-                height %= 1000000007;
-            }
-            ans += height * width;
-            ans %= 1000000007;
-        theEnd:
-            continue;
-        }
+    for (long long i = 0; i < points.size(); i++) {
+        Point p = points[i];
+        // cout << "Point at " << p.x - OFFSET << "," << p.y - OFFSET << " has width " << p.width << " and height " << p.height << endl;
+        ans += (p.height % MODULO) * (p.width % MODULO);
+        ans %= MODULO;
     }
     fout << ans << endl;
     return 0;
