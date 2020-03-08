@@ -1,77 +1,60 @@
 // Test case path: [path]
 // clocktree - Silver - February 2019-2020
-// url
+// http://usaco.org/index.php?page=viewproblem2&cpid=1016
 
 #include <bits/stdc++.h>
 using namespace std;
 
 int N;
 
-/*
 struct Node {
     vector<int> edges;
     int time;
 };
 
-void tryIt(int index, vector<Node> &graph) {
-    queue<int> todo;
-    todo.push(index);
-    while (todo.size() > 0) {
-        int top = todo.front();
-        todo.pop();
-        for (int i = 0; i < graph[top].edges.size(); i++) {
-            if (graph[graph[top].edges[i]].time != 12) {
-                graph[top].time++;
-                todo.push(graph[top].edges[i]);
-            }
+int dfs(int index, vector<bool> &visited, vector<Node> &graph) {
+    if (visited[index]) {
+        return 0;
+    }
+    visited[index] = true;
+    int currentTime = graph[index].time + 1;
+    currentTime %= 12;
+    int branchCount = 0;
+    for (auto &edge : graph[index].edges) {
+        if (!visited[edge]) {
+            branchCount++;
+            currentTime += 12 - dfs(edge, visited, graph);
+            currentTime %= 12;
         }
     }
+    return (currentTime + branchCount) % 12;
 }
-*/
 
 int main() {
     ifstream fin("clocktree.in");
     ofstream fout("clocktree.out");
-    /*
     fin >> N;
-    vector<Node> graphOriginal;
-    graphOriginal.resize(N);
+    vector<Node> graph = vector<Node>(N);
     for (int i = 0; i < N; i++) {
-        fin >> graphOriginal[i].time;
+        fin >> graph[i].time;
+        graph[i].time %= 12;
     }
     for (int i = 0; i < N - 1; i++) {
         int a, b;
         fin >> a >> b;
         a--;
         b--;
-        graphOriginal[a].edges.push_back(b);
-        graphOriginal[b].edges.push_back(a);
+        graph[a].edges.push_back(b);
+        graph[b].edges.push_back(a);
     }
     int ans = 0;
     for (int i = 0; i < N; i++) {
-        vector<Node> graph = graphOriginal;
-        tryIt(i, graph);
-        bool ok = true;
-        for (int i = 0; i < N; i++) {
-            if (graph[i].time != 12) {
-                ok = false;
-                break;
-            }
-        }
-        if (ok) {
+        vector<bool> visited = vector<bool>(N);
+        int time = dfs(i, visited, graph);
+        if (time == 1 || time == 2) {
             ans++;
         }
     }
     fout << ans << endl;
-    */
-    int N;
-    fin >> N;
-    if (N == 4) {
-        fout << 1 << endl;
-    } else if (N <= 100) {
-        fout << 0 << endl;
-    } else {
-        fout << 1 << endl;
-    }
     return 0;
 }
