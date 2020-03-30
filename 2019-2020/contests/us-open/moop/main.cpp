@@ -8,8 +8,6 @@ using namespace std;
 vector<int> groups;
 vector<pair<int, int>> particles;
 int N;
-// N^2 solution, getting points first to get 833
-// just in case I can't solve it
 
 void doFlood(int id, int part) {
     groups[part] = id;
@@ -17,9 +15,11 @@ void doFlood(int id, int part) {
         if (groups[i] != -1) {
             continue;
         }
-        double dy = particles[part].second - particles[i].second;
-        double dx = particles[part].first - particles[i].first;
-        if (particles[part].first == particles[i].first || dy / dx >= -1e-4) {
+        int x1 = particles[part].first;
+        int x2 = particles[i].first;
+        int y1 = particles[part].second;
+        int y2 = particles[i].second;
+        if ((x1 <= x2 && y1 <= y2) || (x2 <= x1 && y2 <= y1)) {
             doFlood(id, i);
         }
     }
