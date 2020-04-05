@@ -1,5 +1,5 @@
 // Test case path: [path]
-// cereal - Division - Month Season
+// cereal - Silver - US-Open 2019-2020
 // http://usaco.org/index.php?page=viewproblem&cpid=1027
 
 #include <bits/stdc++.h>

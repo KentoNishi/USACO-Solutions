@@ -1,5 +1,5 @@
 // Test case path: [path]
-// socdist - Division - Month Season
+// socdist - Silver - US-Open 2019-2020
 // http://usaco.org/index.php?page=viewproblem&cpid=1026
 
 #include <bits/stdc++.h>
