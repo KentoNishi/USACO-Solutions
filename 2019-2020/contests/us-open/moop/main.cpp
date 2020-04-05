@@ -1,47 +1,43 @@
 // Test case path: [path]
-// moop - Division - Month Season
+// moop - Silver - US-Open 2019-2020
 // http://usaco.org/index.php?page=viewproblem&cpid=1028
 
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<int> groups;
-vector<pair<int, int>> particles;
-int N;
-
-void doFlood(int id, int part) {
-    groups[part] = id;
-    for (int i = 0; i < N; i++) {
-        if (groups[i] != -1) {
-            continue;
-        }
-        int x1 = particles[part].first;
-        int x2 = particles[i].first;
-        int y1 = particles[part].second;
-        int y2 = particles[i].second;
-        if ((x1 <= x2 && y1 <= y2) || (x2 <= x1 && y2 <= y1)) {
-            doFlood(id, i);
-        }
-    }
-}
+struct Point {
+    int x;
+    int y;
+};
 
 int main() {
     ifstream fin("moop.in");
     ofstream fout("moop.out");
+    int N;
     fin >> N;
-    particles = vector<pair<int, int>>(N);
+    vector<Point> points = vector<Point>(N);
     for (int i = 0; i < N; i++) {
-        fin >> particles[i].first >> particles[i].second;
+        fin >> points[i].x >> points[i].y;
     }
-    groups = vector<int>(N, -1);
-    int num = 0;
-    for (int i = 0; i < N; i++) {
-        if (groups[i] != -1) {
-            continue;
+    sort(points.begin(), points.end(), [](Point a, Point b) {
+        return (a.x == b.x ? (a.y < b.y) : (a.x < b.x));
+    });
+    vector<int> maxToRight = vector<int>(N);
+    vector<int> minToLeft = maxToRight;
+    minToLeft[0] = points[0].y;
+    maxToRight[N - 1] = points[N - 1].y;
+    for (int i = 1; i < N; i++) {
+        minToLeft[i] = min(minToLeft[i - 1], points[i].y);
+    }
+    for (int i = N - 2; i >= 0; i--) {
+        maxToRight[i] = max(maxToRight[i + 1], points[i].y);
+    }
+    int ans = 1;
+    for (int i = 0; i < N - 1; i++) {
+        if (minToLeft[i] > maxToRight[i + 1]) {
+            ans++;
         }
-        doFlood(num, i);
-        num++;
     }
-    fout << num << endl;
+    fout << ans << endl;
     return 0;
 }
