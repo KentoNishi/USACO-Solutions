@@ -7,7 +7,5 @@
 using namespace std;
 
 int main() {
-    ifstream fin("template.in");
-    ofstream fout("template.out");
     return 0;
 }
